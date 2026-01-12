@@ -13,7 +13,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "נדרש אישור כדי לבחור תמונת פרופיל מהגלריה.",
+        "NSPhotoLibraryAddUsageDescription": "נדרש אישור כדי לשמור תמונת פרופיל.",
+        "NSCameraUsageDescription": "נדרש אישור כדי לצלם תמונת פרופיל."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +29,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ]
   }
 }
