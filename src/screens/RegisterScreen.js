@@ -33,6 +33,7 @@ function formatDateYYYYMMDD(date) {
 }
 
 export default function RegisterScreen({ navigation }) {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -46,6 +47,7 @@ export default function RegisterScreen({ navigation }) {
 
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
+  const emailRef = useRef(null);
 
   const birthdate = useMemo(() => {
     return birthdateDate ? formatDateYYYYMMDD(birthdateDate) : '';
@@ -62,15 +64,16 @@ export default function RegisterScreen({ navigation }) {
   }, [password, confirmPassword]);
 
   const canSubmit = useMemo(() => {
+    if (!fullName.trim()) return false;
     if (!email || !password || !confirmPassword || !birthdate) return false;
     if (password !== confirmPassword) return false;
     if (!isValidBirthdateString(birthdate)) return false;
     return true;
-  }, [email, password, confirmPassword, birthdate]);
+  }, [fullName, email, password, confirmPassword, birthdate]);
 
   const handleRegister = async () => {
     if (!canSubmit) {
-      Alert.alert('שגיאה', 'אנא בדוק/י שכל השדות תקינים (תאריך: YYYY-MM-DD).');
+      Alert.alert('שגיאה', 'אנא מלא/י שם מלא ובדוק/י שכל השדות תקינים (תאריך: YYYY-MM-DD).');
       return;
     }
 
@@ -80,8 +83,8 @@ export default function RegisterScreen({ navigation }) {
         email: email.trim(),
         password,
         options: {
-          // Trigger will copy this into public.users.birthdate
-          data: { birthdate },
+          // Trigger will copy this into public.users.*
+          data: { birthdate, display_name: fullName.trim() },
         },
       });
       if (error) throw error;
@@ -123,7 +126,7 @@ export default function RegisterScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text style={styles.title}>הרשמה</Text>
-        <Text style={styles.subtitle}>דקה אחת ואתה בפנים</Text>
+        <Text style={styles.subtitle}>דקה ואת/ה בפנים</Text>
 
         <View style={styles.form}>
         <View style={styles.avatarRow}>
@@ -159,8 +162,21 @@ export default function RegisterScreen({ navigation }) {
           <Text style={styles.avatarHint}>לחץ כדי להוסיף תמונת פרופיל</Text>
         </View>
 
+        <Text style={styles.label}>איך נקרא לך? (חובה)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="שם מלא"
+          value={fullName}
+          onChangeText={setFullName}
+          autoCapitalize="words"
+          textContentType="name"
+          returnKeyType="next"
+          onSubmitEditing={() => emailRef.current?.focus?.()}
+        />
+
         <Text style={styles.label}>אימייל</Text>
         <TextInput
+          ref={emailRef}
           style={styles.input}
           placeholder="name@email.com"
           value={email}

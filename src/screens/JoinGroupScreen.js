@@ -19,7 +19,7 @@ export default function JoinGroupScreen({ route, navigation }) {
       if (error) throw error;
       if (!groupId) throw new Error('לא הצלחנו להצטרף');
 
-      Alert.alert('הצטרפת!', 'ברוך/ה הבא/ה לקבוצה 🎯', [
+      Alert.alert('הצטרפת!', 'ברוך/ה הבא/ה לאתגר 🎯', [
         {
           text: 'יאללה',
           onPress: () => {
@@ -49,7 +49,7 @@ export default function JoinGroupScreen({ route, navigation }) {
         >
           <Text style={styles.back}>חזרה</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הצטרפות לקבוצה</Text>
+        <Text style={styles.title}>הצטרפות לאתגר</Text>
         <View style={{ width: 48 }} />
       </View>
 

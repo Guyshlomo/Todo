@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage, uploadAvatarToSupabase } from '../lib/avatar';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [userRow, setUserRow] = useState(null);
   const [email, setEmail] = useState(null);
   const [savingAvatar, setSavingAvatar] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     let mounted = true;
@@ -15,8 +17,8 @@ export default function ProfileScreen() {
     const load = async () => {
       try {
         setLoading(true);
-        const { data } = await supabase.auth.getUser();
-        const user = data?.user ?? null;
+        const { data: authData } = await supabase.auth.getUser();
+        const user = authData?.user ?? null;
         if (!user) return;
 
         const { data: row } = await supabase
@@ -26,8 +28,16 @@ export default function ProfileScreen() {
           .single();
 
         if (!mounted) return;
-        setEmail(user.email ?? row?.email ?? null);
-        setUserRow(row ?? null);
+        
+        // Combine auth metadata and DB row for the most accurate info
+        const combinedRow = {
+          ...row,
+          display_name: row?.display_name || user.user_metadata?.display_name || user.user_metadata?.full_name || 'משתמש',
+          email: user.email || row?.email
+        };
+
+        setEmail(combinedRow.email);
+        setUserRow(combinedRow);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -37,7 +47,7 @@ export default function ProfileScreen() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [isFocused]);
 
   const displayName = useMemo(() => userRow?.display_name || 'משתמש', [userRow]);
 
@@ -107,7 +117,7 @@ export default function ProfileScreen() {
         <View style={styles.statsRow}>
           <View style={styles.stat}>
             <Text style={styles.statValue}>{userRow?.total_points ?? 0}</Text>
-            <Text style={styles.statLabel}>נק׳</Text>
+            <Text style={styles.statLabel}>XP</Text>
           </View>
           <View style={styles.stat}>
             <Text style={styles.statValue}>{userRow?.birthdate ?? '—'}</Text>

@@ -9,6 +9,7 @@ export default function InviteScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [inviteCode, setInviteCode] = useState('');
   const [groupName, setGroupName] = useState('');
+  const [userName, setUserName] = useState('');
 
   const inviteLink = useMemo(() => {
     // Example: exp://.../--/join?code=XXXX (Expo Go) or your app scheme in production
@@ -20,12 +21,27 @@ export default function InviteScreen({ route, navigation }) {
     const load = async () => {
       try {
         setLoading(true);
+        // 1. Fetch challenge info
         const { data, error } = await supabase
           .from('groups')
           .select('name, invite_code')
           .eq('id', groupId)
           .single();
         if (error) throw error;
+
+        // 2. Fetch current user display_name for share text
+        const { data: userData } = await supabase.auth.getUser();
+        if (userData?.user) {
+          const { data: profile } = await supabase
+            .from('users')
+            .select('display_name')
+            .eq('id', userData.user.id)
+            .single();
+          if (profile?.display_name) {
+            setUserName(profile.display_name);
+          }
+        }
+
         if (!mounted) return;
         setInviteCode(data?.invite_code ?? '');
         setGroupName(data?.name ?? '');
@@ -55,12 +71,12 @@ export default function InviteScreen({ route, navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>חזרה</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הזמנה</Text>
+        <Text style={styles.title}>הזמנה לאתגר</Text>
         <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>הזמן חברים לקבוצה</Text>
+        <Text style={styles.cardTitle}>הזמן חברים לאתגר</Text>
         <Text style={styles.cardSubtitle}>{groupName}</Text>
 
         <Text style={styles.label}>קוד הצטרפות</Text>
@@ -88,8 +104,9 @@ export default function InviteScreen({ route, navigation }) {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={async () => {
+            const shareName = userName || 'חבר/ה';
             await Share.share({
-              message: `בוא/י לאתגר שלנו 🎯\n\nקוד הצטרפות: ${inviteCode}\nלינק: ${inviteLink}`,
+              message: `${shareName} מאתגר אותך ב-Todo\n\nקוד הצטרפות: ${inviteCode}\nלינק: ${inviteLink}`,
             });
           }}
         >

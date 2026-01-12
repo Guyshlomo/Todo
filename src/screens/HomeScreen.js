@@ -3,6 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, 
 import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 
+function formatValidity(challenge) {
+  const s = challenge?.start_date ?? null;
+  const e = challenge?.end_date ?? null;
+  if (!s || !e) return null;
+  return `${s} - ${e}`;
+}
+
 export default function HomeScreen({ navigation }) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +54,7 @@ export default function HomeScreen({ navigation }) {
   const progress = 0.67; // TODO: compute from reports per current period
 
   const renderGroupItem = ({ item }) => (
+    // In MVP: one challenge == one group (group exists implicitly per challenge).
     <TouchableOpacity 
       style={styles.groupCard}
       onPress={() => navigation.navigate('GroupDetail', { groupId: item.id })}
@@ -55,9 +63,9 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.cardHeader}>
         <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
         <View style={styles.groupInfo}>
-          <Text style={styles.groupName}>{item.name}</Text>
+          <Text style={styles.groupName}>{item.challenges?.[0]?.name || item.name}</Text>
           <Text style={styles.challengeInfo}>
-            {item.challenges?.[0]?.name || 'אין אתגר פעיל'}
+            {formatValidity(item.challenges?.[0]) || 'תוקף האתגר לא הוגדר'}
           </Text>
         </View>
       </View>
@@ -71,7 +79,7 @@ export default function HomeScreen({ navigation }) {
 
       <View style={styles.cardFooter}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>מוביל השבוע 🏆</Text>
+          <Text style={styles.badgeText}>מוביל/ה 🏆</Text>
         </View>
         <Text style={styles.streakText}>🔥 רצף: 4</Text>
       </View>
@@ -90,8 +98,15 @@ export default function HomeScreen({ navigation }) {
         <ActivityIndicator size="large" color="#6366F1" style={{ marginTop: 50 }} animating={true} />
       ) : groups.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>עדיין אין לך קבוצות...</Text>
-          <Text style={styles.emptySubText}>צור קבוצה חדשה כדי להתחיל!</Text>
+          <Text style={styles.emptyText}>עדיין אין לך אתגרים</Text>
+          <Text style={styles.emptySubText}>צור/י אתגר חדש כדי להתחיל 💪</Text>
+          
+          <TouchableOpacity 
+            style={styles.emptyButton}
+            onPress={() => navigation.navigate('CreateGroup')}
+          >
+            <Text style={styles.emptyButtonText}>צור אתגר חדש</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <FlatList
@@ -107,7 +122,7 @@ export default function HomeScreen({ navigation }) {
         style={styles.fab}
         onPress={() => navigation.navigate('CreateGroup')}
       >
-        <Text style={styles.fabText}>+</Text>
+        <Text style={styles.fabText}>צור אתגר חדש</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -115,7 +130,7 @@ export default function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('Join')}
         activeOpacity={0.85}
       >
-        <Text style={styles.joinPillText}>להצטרפות לקבוצה</Text>
+        <Text style={styles.joinPillText}>להצטרפות לאתגר</Text>
       </TouchableOpacity>
     </View>
   );
@@ -249,15 +264,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6C757D',
     marginTop: 8,
+    marginBottom: 24,
+  },
+  emptyButton: {
+    backgroundColor: '#6366F1',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 999,
+  },
+  emptyButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '900',
   },
   fab: {
     position: 'absolute',
     bottom: 40,
     right: 30,
     backgroundColor: '#6366F1',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    paddingHorizontal: 16,
+    height: 52,
+    borderRadius: 999,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
@@ -268,8 +295,8 @@ const styles = StyleSheet.create({
   },
   fabText: {
     color: '#FFF',
-    fontSize: 35,
-    fontWeight: '300',
+    fontSize: 14,
+    fontWeight: '900',
   },
   joinPill: {
     position: 'absolute',
