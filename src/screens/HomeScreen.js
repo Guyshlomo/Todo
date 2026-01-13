@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl, Alert, Image, Pressable } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { useI18n } from '../i18n/I18nProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import { useTheme } from '../theme/ThemeProvider';
 
 const HOME_ORDER_KEY = 'todo:home:order:v1';
 
@@ -88,6 +90,7 @@ function formatCountdown({ language, endDateString, now }) {
 
 export default function HomeScreen({ navigation }) {
   const { t, language } = useI18n();
+  const { colors, isDark } = useTheme();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -231,17 +234,7 @@ export default function HomeScreen({ navigation }) {
     await persistOrder(ids);
   };
 
-  const handleMoveTop = async () => {
-    if (selectedIds.size === 0) return;
-    const next = moveSelectedToTop(groups, selectedIds);
-    await applyReorder(next);
-  };
-
-  const handleMoveBottom = async () => {
-    if (selectedIds.size === 0) return;
-    const next = moveSelectedToBottom(groups, selectedIds);
-    await applyReorder(next);
-  };
+  // Reordering is done via drag-and-drop in edit mode.
 
   const handleDeleteSelected = async () => {
     if (selectedIds.size === 0) return;
@@ -285,15 +278,22 @@ export default function HomeScreen({ navigation }) {
   const renderGroupItem = ({ item }) => {
     const ch = item.challenges?.[0] ?? null;
     const countdown = formatCountdown({ language, endDateString: ch?.end_date ?? null, now });
+    const cardPressedBg = isDark ? '#111C33' : '#F3F4F6';
+    const badgeBg = isDark ? '#2A1B0B' : '#FFF7ED';
+    const badgeBorder = isDark ? '#3B2A12' : '#FFEDD5';
+    const badgeTextColor = isDark ? '#FDBA74' : '#C2410C';
     return (
     // In MVP: one challenge == one group (group exists implicitly per challenge).
-    <TouchableOpacity 
-      style={styles.groupCard}
+    <Pressable
+      style={({ pressed }) => [
+        styles.groupCard,
+        { backgroundColor: pressed ? cardPressedBg : colors.card, borderColor: colors.border },
+        pressed && { transform: [{ scale: 0.99 }] },
+      ]}
       onPress={() => {
         if (editMode) toggleSelect(item.id);
         else navigation.navigate('GroupDetail', { groupId: item.id });
       }}
-      activeOpacity={0.85}
     >
       <View style={styles.cardHeader}>
         <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
@@ -304,29 +304,76 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.checkboxText}>{selectedIds.has(item.id) ? '✓' : ''}</Text>
               </View>
             ) : null}
-            <Text style={styles.groupName}>{item.challenges?.[0]?.name || item.name}</Text>
+            <Text style={[styles.groupName, { color: colors.text }]}>{item.challenges?.[0]?.name || item.name}</Text>
           </View>
-          <Text style={styles.challengeInfo}>
-            {formatValidity(item.challenges?.[0]) || 'תוקף האתגר לא הוגדר'}
+          <Text style={[styles.challengeInfo, { color: colors.muted }]}>
+            {formatValidity(item.challenges?.[0]) || t('home.validityMissing')}
           </Text>
-          {countdown ? <Text style={styles.countdownText}>{countdown}</Text> : null}
+          {countdown ? <Text style={[styles.countdownText, { color: colors.text }]}>{countdown}</Text> : null}
         </View>
       </View>
 
 
       <View style={styles.cardFooter}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>
+        <View style={[styles.badge, { backgroundColor: badgeBg, borderColor: badgeBorder }]}>
+          <Text style={[styles.badgeText, { color: badgeTextColor }]}>
             {rankLabel(myRankByGroupId?.[item.id]) || (language === 'en' ? 'No rank yet' : 'אין דירוג עדיין')}
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
+    );
+  };
+
+  const renderDraggableItem = ({ item, drag, isActive }) => {
+    const ch = item.challenges?.[0] ?? null;
+    const countdown = formatCountdown({ language, endDateString: ch?.end_date ?? null, now });
+    const cardPressedBg = isDark ? '#111C33' : '#F3F4F6';
+    const badgeBg = isDark ? '#2A1B0B' : '#FFF7ED';
+    const badgeBorder = isDark ? '#3B2A12' : '#FFEDD5';
+    const badgeTextColor = isDark ? '#FDBA74' : '#C2410C';
+    return (
+      <Pressable
+        style={({ pressed }) => [
+          styles.groupCard,
+          { backgroundColor: pressed ? cardPressedBg : colors.card, borderColor: colors.border },
+          (pressed || isActive) && { transform: [{ scale: 0.99 }] },
+          isActive && { opacity: 0.9 },
+        ]}
+        onLongPress={drag}
+        delayLongPress={150}
+        onPress={() => toggleSelect(item.id)}
+      >
+        <View style={styles.cardHeader}>
+          <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
+          <View style={styles.groupInfo}>
+            <View style={styles.nameRow}>
+              <View style={[styles.checkbox, selectedIds.has(item.id) && styles.checkboxOn]}>
+                <Text style={styles.checkboxText}>{selectedIds.has(item.id) ? '✓' : ''}</Text>
+              </View>
+              <Text style={[styles.groupName, { color: colors.text }]}>{item.challenges?.[0]?.name || item.name}</Text>
+            </View>
+            <Text style={[styles.challengeInfo, { color: colors.muted }]}>
+              {formatValidity(item.challenges?.[0]) || t('home.validityMissing')}
+            </Text>
+            {countdown ? <Text style={[styles.countdownText, { color: colors.text }]}>{countdown}</Text> : null}
+          </View>
+        </View>
+
+        <View style={styles.cardFooter}>
+          <View style={[styles.badge, { backgroundColor: badgeBg, borderColor: badgeBorder }]}>
+            <Text style={[styles.badgeText, { color: badgeTextColor }]}>
+              {rankLabel(myRankByGroupId?.[item.id]) || (language === 'en' ? 'No rank yet' : 'אין דירוג עדיין')}
+            </Text>
+          </View>
+          <Text style={[styles.dragHint, { color: colors.muted }]}>גרור/י ↕︎</Text>
+        </View>
+      </Pressable>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.editTopBtn}
@@ -336,70 +383,80 @@ export default function HomeScreen({ navigation }) {
           }}
           activeOpacity={0.85}
         >
-          <Text style={styles.editTopIcon}>{editMode ? '✅' : '✏️'}</Text>
+          {editMode ? (
+            <Text style={styles.editTopIcon}>✅</Text>
+          ) : (
+            <Image source={require('../../assets/images/edit.png')} style={styles.editTopImg} />
+          )}
         </TouchableOpacity>
         <View style={styles.headerRight}>
-          <Text style={styles.title}>{editMode ? 'עריכת אתגרים' : t('home.title')}</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{editMode ? 'עריכת אתגרים' : t('home.title')}</Text>
         </View>
       </View>
 
       {editMode ? (
-        <View style={styles.editBar}>
-          <Text style={styles.editCount}>מסומנים: {selectedIds.size}</Text>
+        <View style={[styles.editBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.editCount, { color: colors.text }]}>מסומנים: {selectedIds.size}</Text>
           <View style={styles.editActions}>
-            <TouchableOpacity style={styles.editBtn} onPress={handleMoveTop} disabled={selectedIds.size === 0}>
-              <Text style={styles.editBtnText}>למעלה</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.editBtn} onPress={handleMoveBottom} disabled={selectedIds.size === 0}>
-              <Text style={styles.editBtnText}>למטה</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={[styles.editBtn, styles.editBtnDanger]} onPress={handleDeleteSelected} disabled={selectedIds.size === 0}>
-              <Text style={styles.editBtnText}>הסר/י</Text>
+              <Text style={[styles.editBtnText, { color: colors.primary }]}>הסר/י</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.editBtn, styles.editBtnGhost]} onPress={exitEditMode}>
-              <Text style={[styles.editBtnText, styles.editBtnGhostText]}>סיום</Text>
+              <Text style={[styles.editBtnText, styles.editBtnGhostText, { color: colors.text }]}>סיום</Text>
             </TouchableOpacity>
           </View>
         </View>
       ) : null}
 
       {loading ? (
-        <ActivityIndicator size="large" color="#6366F1" style={{ marginTop: 50 }} animating={true} />
+        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 50 }} animating={true} />
       ) : groups.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>{t('home.emptyTitle')}</Text>
-          <Text style={styles.emptySubText}>{t('home.emptySubtitle')}</Text>
+          <Text style={[styles.emptyText, { color: colors.text }]}>{t('home.emptyTitle')}</Text>
+          <Text style={[styles.emptySubText, { color: colors.muted }]}>{t('home.emptySubtitle')}</Text>
           
           <TouchableOpacity 
-            style={styles.emptyButton}
+            style={[styles.emptyButton, { backgroundColor: colors.primary }]}
             onPress={() => navigation.navigate('CreateGroup')}
           >
             <Text style={styles.emptyButtonText}>{t('home.createChallenge')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <FlatList
-          data={groups}
-          keyExtractor={(item) => item.id}
-          renderItem={renderGroupItem}
-          contentContainerStyle={styles.listContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />}
-        />
+        editMode ? (
+          <DraggableFlatList
+            data={groups}
+            keyExtractor={(item) => item.id}
+            renderItem={renderDraggableItem}
+            contentContainerStyle={styles.listContainer}
+            onDragEnd={async ({ data }) => {
+              await applyReorder(data);
+            }}
+          />
+        ) : (
+          <FlatList
+            data={groups}
+            keyExtractor={(item) => item.id}
+            renderItem={renderGroupItem}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />}
+          />
+        )
       )}
 
       <TouchableOpacity 
-        style={styles.fab}
+        style={[styles.fab, { backgroundColor: colors.primary }]}
         onPress={() => navigation.navigate('CreateGroup')}
       >
         <Text style={styles.fabText}>{t('home.createChallenge')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.joinPill}
+        style={[styles.joinPill, { backgroundColor: isDark ? '#111827' : '#EEF2FF', borderColor: isDark ? colors.border : '#E0E7FF' }]}
         onPress={() => navigation.navigate('Join')}
         activeOpacity={0.85}
       >
-        <Text style={styles.joinPillText}>{t('home.joinChallenge')}</Text>
+        <Text style={[styles.joinPillText, { color: colors.primary }]}>{t('home.joinChallenge')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -438,6 +495,12 @@ const styles = StyleSheet.create({
   editTopIcon: {
     fontSize: 18,
   },
+  editTopImg: {
+    width: 18,
+    height: 18,
+    resizeMode: 'contain',
+    shadowRadius: 10,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -453,16 +516,15 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   groupCard: {
-    backgroundColor: '#FFF',
     borderRadius: 20,
     padding: 20,
     marginBottom: 15,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    borderWidth: 2,
     borderColor: '#F1F3F5',
   },
   cardHeader: {
@@ -550,8 +612,15 @@ const styles = StyleSheet.create({
     borderTopColor: '#F1F3F5',
     paddingTop: 12,
   },
+  dragHint: {
+    fontWeight: '900',
+    color: '#6C757D',
+    fontSize: 12,
+  },
   badge: {
     backgroundColor: '#FFF7ED',
+    borderWidth: 1,
+    borderColor: '#FFEDD5',
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 12,

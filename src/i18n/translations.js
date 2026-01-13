@@ -52,6 +52,7 @@ export const translations = {
     settings: {
       title: 'הגדרות',
       language: 'שינוי שפה',
+      darkMode: 'מצב כהה',
       updatesOptIn: 'אפשרות לקבלת עדכונים',
       logout: 'התנתקות מהחשבון',
       deleteAccount: 'מחיקת החשבון',
@@ -143,6 +144,7 @@ export const translations = {
     settings: {
       title: 'Settings',
       language: 'Language',
+      darkMode: 'Dark mode',
       updatesOptIn: 'Get updates',
       logout: 'Log out',
       deleteAccount: 'Delete account',

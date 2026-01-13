@@ -5,8 +5,10 @@ import { pickAvatarImage } from '../lib/avatar';
 import { uploadProofImage } from '../lib/proofs';
 import { Camera, Type, Check, X } from 'lucide-react-native';
 import { notifyGroupEvent } from '../lib/pushEvents';
+import { useTheme } from '../theme/ThemeProvider';
 
 export default function ReportScreen({ route, navigation }) {
+  const { colors } = useTheme();
   const { challengeId, groupId } = route.params;
   const [challenge, setChallenge] = useState(null);
   const [value, setValue] = useState('1');
@@ -205,7 +207,7 @@ export default function ReportScreen({ route, navigation }) {
           const subtitle =
             totalXpAfter === null
               ? `+${pointsEarned} XP`
-              : `+${pointsEarned} XP · סה״כ ${totalXpAfter} XP`;
+              : `+${pointsEarned} XP `;
           playSuccessOverlay({ title: 'נשמר! 🎉', subtitle });
         } else {
           // Best-effort: also notify on report submission even if "no" (still a report)
@@ -243,8 +245,8 @@ export default function ReportScreen({ route, navigation }) {
 
   if (fetching) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#6366F1" animating={true} />
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
+        <ActivityIndicator size="large" color={colors.primary} animating={true} />
       </View>
     );
   }
@@ -254,7 +256,7 @@ export default function ReportScreen({ route, navigation }) {
 
   return (
     <KeyboardAvoidingView 
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.bg }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {resultOverlay ? (
@@ -268,9 +270,9 @@ export default function ReportScreen({ route, navigation }) {
       ) : null}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>ביטול</Text>
+          <Text style={[styles.backButton, { color: colors.primary }]}>ביטול</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הדיווח שלך ⚡</Text>
+        <Text style={[styles.title, { color: colors.text }]}>הדיווח שלך ⚡</Text>
         <View style={{ width: 40 }} />
       </View>
 

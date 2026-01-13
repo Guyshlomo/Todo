@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { ChevronLeft, Flame, Trophy, Calendar, CheckCircle2, User as UserIcon, X } from 'lucide-react-native';
 import { useI18n } from '../i18n/I18nProvider';
+import { resolveProofImageUrl } from '../lib/proofs';
 
 function endOfLocalDay(date) {
   const d = new Date(date);
@@ -28,6 +29,10 @@ export default function GroupDetailScreen({ route, navigation }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userReports, setUserReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
+  const [selectedProofImageUrl, setSelectedProofImageUrl] = useState(null);
+  const [proofLoading, setProofLoading] = useState(false);
+  const [proofLoadError, setProofLoadError] = useState(false);
+  const [proofTriedResolve, setProofTriedResolve] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const isFocused = useIsFocused();
 
@@ -195,6 +200,13 @@ export default function GroupDetailScreen({ route, navigation }) {
     fetchUserChallengeHistory(user.id);
   };
 
+  const closeProofImage = () => {
+    setSelectedProofImageUrl(null);
+    setProofLoading(false);
+    setProofLoadError(false);
+    setProofTriedResolve(false);
+  };
+
   const renderLeaderboardItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.leaderboardItem}
@@ -239,10 +251,10 @@ export default function GroupDetailScreen({ route, navigation }) {
       <View style={styles.header}>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={() => navigation.navigate('Invite', { groupId })} style={styles.headerIconBtn}>
-            <Text style={styles.settingsIcon}>⚙️</Text>
+            <Image source={require('../../assets/images/share.png')} style={styles.shareIconImg} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLeaveChallenge} style={[styles.headerIconBtn, styles.deleteIconBtn]}>
-            <Text style={styles.deleteIcon}>🚪</Text>
+            <Image source={require('../../assets/images/exit.png')} style={styles.exitIconImg} />
           </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle} numberOfLines={1}>{challenge?.name || group.name}</Text>
@@ -333,11 +345,8 @@ export default function GroupDetailScreen({ route, navigation }) {
                   <Text style={styles.userProfileName}>{selectedUser.name}</Text>
                   
                   <View style={styles.userProfileStats}>
-                    <View style={styles.userStatBox}>
-                      <Flame color="#FD7E14" size={24} />
-                      <Text style={styles.userStatValue}>{selectedUser.streak}</Text>
-                      <Text style={styles.userStatLabel}>רצף</Text>
-                    </View>
+                    
+                    
                     <View style={styles.userStatBox}>
                       <Trophy color="#6366F1" size={24} />
                       <Text style={styles.userStatValue}>{selectedUser.points}</Text>
@@ -353,7 +362,19 @@ export default function GroupDetailScreen({ route, navigation }) {
                   <Text style={styles.emptyHistory}>עדיין אין דיווחים באתגר זה</Text>
                 ) : (
                   userReports.map((report) => (
-                    <View key={report.id} style={styles.reportRow}>
+                    <TouchableOpacity
+                      key={report.id}
+                      style={styles.reportRow}
+                      activeOpacity={report.proof_image_url ? 0.85 : 1}
+                      onPress={() => {
+                        if (report.proof_image_url) {
+                          setProofLoadError(false);
+                          setProofLoading(true);
+                          setProofTriedResolve(false);
+                          setSelectedProofImageUrl(report.proof_image_url);
+                        }
+                      }}
+                    >
                       <View style={styles.reportStatus}>
                         {report.is_done ? (
                           <CheckCircle2 color="#22C55E" size={20} />
@@ -362,23 +383,85 @@ export default function GroupDetailScreen({ route, navigation }) {
                         )}
                       </View>
                       <View style={styles.reportMain}>
-                        <Text style={styles.reportDate}>
-                          {new Date(report.created_at).toLocaleDateString('he-IL')}
-                        </Text>
+                        <TouchableOpacity
+                          activeOpacity={report.proof_image_url ? 0.7 : 1}
+                          onPress={() => {
+                            if (report.proof_image_url) setSelectedProofImageUrl(report.proof_image_url);
+                          }}
+                          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                          style={{ alignSelf: 'flex-end', paddingVertical: 4 }}
+                        >
+                          <Text style={[styles.reportDate, report.proof_image_url && styles.reportDateLink]}>
+                            {new Date(report.created_at).toLocaleDateString('he-IL')}
+                          </Text>
+                        </TouchableOpacity>
                         {report.proof_text && (
                           <Text style={styles.reportProofText}>"{report.proof_text}"</Text>
                         )}
                         {report.proof_image_url && (
-                          <Image source={{ uri: report.proof_image_url }} style={styles.reportProofImg} />
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                              setProofLoadError(false);
+                              setProofLoading(true);
+                              setProofTriedResolve(false);
+                              setSelectedProofImageUrl(report.proof_image_url);
+                            }}
+                            style={{ width: '100%' }}
+                          >
+                            <Image source={{ uri: report.proof_image_url }} style={styles.reportProofImg} />
+                            <Text style={styles.tapToView}>לחצו לצפייה</Text>
+                          </TouchableOpacity>
                         )}
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   ))
                 )}
               </ScrollView>
             )}
           </View>
         </View>
+
+        {/* Fullscreen proof image (overlay inside the same modal for reliability) */}
+        {selectedProofImageUrl ? (
+          <View style={styles.proofBackdrop}>
+            <TouchableOpacity style={styles.proofCloseBtn} onPress={closeProofImage} activeOpacity={0.85}>
+              <Text style={styles.proofCloseText}>✕</Text>
+            </TouchableOpacity>
+            {proofLoading ? <ActivityIndicator color="#FFF" style={{ marginBottom: 10 }} /> : null}
+            {proofLoadError ? (
+              <Text style={styles.proofErrorText}>לא הצלחנו לטעון את התמונה</Text>
+            ) : null}
+            <Image
+              source={{ uri: selectedProofImageUrl }}
+              style={styles.proofFullImg}
+              onLoadStart={() => {
+                setProofLoading(true);
+                setProofLoadError(false);
+              }}
+              onLoadEnd={() => {
+                setProofLoading(false);
+              }}
+              onError={async () => {
+                // If bucket is private / RLS blocks public URL, try resolving to signed URL once.
+                if (!proofTriedResolve) {
+                  setProofTriedResolve(true);
+                  try {
+                    const signed = await resolveProofImageUrl(selectedProofImageUrl);
+                    if (signed && signed !== selectedProofImageUrl) {
+                      setSelectedProofImageUrl(signed);
+                      return;
+                    }
+                  } catch (_e) {
+                    // ignore
+                  }
+                }
+                setProofLoading(false);
+                setProofLoadError(true);
+              }}
+            />
+          </View>
+        ) : null}
       </Modal>
     </View>
   );
@@ -416,7 +499,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   deleteIconBtn: {
-    backgroundColor: '#FFF0F0',
+    backgroundColor: 'transparent',
   },
   backBtn: {
     flexDirection: 'row-reverse',
@@ -438,6 +521,16 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     fontSize: 22,
+  },
+  shareIconImg: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+  },
+  exitIconImg: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
   },
   deleteIcon: {
     fontSize: 20,
@@ -747,6 +840,9 @@ const styles = StyleSheet.create({
     color: '#495057',
     marginBottom: 8,
   },
+  reportDateLink: {
+    textDecorationLine: 'underline',
+  },
   reportProofText: {
     fontSize: 14,
     color: '#1A1C1E',
@@ -762,5 +858,51 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 12,
     marginTop: 8,
+  },
+  tapToView: {
+    marginTop: 6,
+    textAlign: 'right',
+    color: '#6C757D',
+    fontWeight: '800',
+    fontSize: 12,
+  },
+  proofBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  proofFullImg: {
+    width: '100%',
+    height: '80%',
+    resizeMode: 'contain',
+    borderRadius: 14,
+  },
+  proofCloseBtn: {
+    position: 'absolute',
+    top: 54,
+    left: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  proofCloseText: {
+    color: '#FFF',
+    fontWeight: '900',
+    fontSize: 18,
+  },
+  proofErrorText: {
+    color: '#FFF',
+    fontWeight: '800',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });

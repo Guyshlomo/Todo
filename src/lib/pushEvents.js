@@ -46,8 +46,11 @@ export async function ensureExpoPushTokenSaved() {
 export async function notifyGroupEvent({ type, groupId, actorUserId }) {
   try {
     if (!type || !groupId) return;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token ?? null;
     await supabase.functions.invoke('notify-group', {
       body: { type, groupId, actorUserId },
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
     });
   } catch (_e) {
     // best-effort

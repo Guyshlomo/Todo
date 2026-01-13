@@ -16,11 +16,13 @@ import * as Linking from 'expo-linking';
 import { ChevronLeft } from 'lucide-react-native';
 import { getLanguage, getUpdatesOptIn } from '../lib/localSettings';
 import { useI18n } from '../i18n/I18nProvider';
+import { useTheme } from '../theme/ThemeProvider';
 
 const PRIVACY_POLICY_URL = 'https://to-do-b5e7d755.base44.app/';
 
 export default function ProfileScreen({ navigation }) {
   const { t } = useI18n();
+  const { colors, isDark } = useTheme();
   const [loading, setLoading] = useState(true);
   const [userRow, setUserRow] = useState(null);
   const [savingAvatar, setSavingAvatar] = useState(false);
@@ -118,18 +120,18 @@ export default function ProfileScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
         <ActivityIndicator size="large" color="#6366F1" animating={true} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <Text style={styles.title}>{t('profile.title')}</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.bg }]} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <Text style={[styles.title, { color: colors.text }]}>{t('profile.title')}</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.nameCentered}>{displayName}</Text>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowOpacity: isDark ? 0 : styles.card.shadowOpacity }]}>
+        <Text style={[styles.nameCentered, { color: colors.text }]}>{displayName}</Text>
         <TouchableOpacity
           style={styles.avatarPressableCentered}
           onPress={handleChangeAvatar}
@@ -153,28 +155,28 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
 
 
-        <Text style={styles.note}>{t('profile.tip')}</Text>
-        <View style={styles.listCard}>
+        <Text style={[styles.note, { color: colors.muted }]}>{t('profile.tip')}</Text>
+        <View style={[styles.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <TouchableOpacity
             style={styles.rowPress}
             onPress={() => navigation.navigate('PersonalDetails')}
             activeOpacity={0.85}
           >
-            <Text style={styles.rowTitle}>{t('profile.personalDetails')}</Text>
+            <Text style={[styles.rowTitle, { color: colors.text }]}>{t('profile.personalDetails')}</Text>
             <View style={{ flex: 1 }} />
-            <ChevronLeft size={18} color="#6C757D" />
+            <ChevronLeft size={18} color={colors.muted} />
           </TouchableOpacity>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <TouchableOpacity style={styles.rowPress} onPress={handleOpenPrivacy} activeOpacity={0.85}>
-            <Text style={styles.rowTitle}>{t('profile.privacyPolicy')}</Text>
+            <Text style={[styles.rowTitle, { color: colors.text }]}>{t('profile.privacyPolicy')}</Text>
             <View style={{ flex: 1 }} />
-            <ChevronLeft size={18} color="#6C757D" />
+            <ChevronLeft size={18} color={colors.muted} />
           </TouchableOpacity>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <TouchableOpacity style={styles.rowPress} onPress={() => navigation.navigate('Settings')} activeOpacity={0.85}>
-            <Text style={styles.rowTitle}>{t('profile.settings')}</Text>
+            <Text style={[styles.rowTitle, { color: colors.text }]}>{t('profile.settings')}</Text>
             <View style={{ flex: 1 }} />
-            <ChevronLeft size={18} color="#6C757D" />
+            <ChevronLeft size={18} color={colors.muted} />
           </TouchableOpacity>
         </View>
 

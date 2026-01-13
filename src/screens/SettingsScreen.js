@@ -3,9 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-n
 import { supabase } from '../lib/supabase';
 import { getUpdatesOptIn, setUpdatesOptIn } from '../lib/localSettings';
 import { useI18n } from '../i18n/I18nProvider';
+import { useTheme } from '../theme/ThemeProvider';
 
 export default function SettingsScreen({ navigation }) {
   const { t, language, setLanguage } = useI18n();
+  const { isDark, setTheme, colors } = useTheme();
   const [updatesOptIn, setUpdatesOptInState] = useState(false);
 
   useEffect(() => {
@@ -58,42 +60,62 @@ export default function SettingsScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>{t('common.back')}</Text>
+          <Text style={[styles.back, { color: colors.primary }]}>{t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>{t('settings.title')}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t('settings.title')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.language')}</Text>
         <View style={styles.langPills}>
           <TouchableOpacity
-            style={[styles.langPill, language === 'he' && styles.langPillActive]}
+            style={[
+              styles.langPill,
+              { backgroundColor: colors.chipBg, borderColor: colors.border },
+              language === 'he' && [styles.langPillActive, { backgroundColor: colors.text, borderColor: colors.text }],
+            ]}
             onPress={async () => {
               await setLanguage('he');
             }}
             activeOpacity={0.85}
           >
-            <Text style={[styles.langPillText, language === 'he' && styles.langPillTextActive]}>עברית</Text>
+            <Text style={[styles.langPillText, { color: colors.text }, language === 'he' && styles.langPillTextActive]}>עברית</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.langPill, language === 'en' && styles.langPillActive]}
+            style={[
+              styles.langPill,
+              { backgroundColor: colors.chipBg, borderColor: colors.border },
+              language === 'en' && [styles.langPillActive, { backgroundColor: colors.text, borderColor: colors.text }],
+            ]}
             onPress={async () => {
               await setLanguage('en');
             }}
             activeOpacity={0.85}
           >
-            <Text style={[styles.langPillText, language === 'en' && styles.langPillTextActive]}>English</Text>
+            <Text style={[styles.langPillText, { color: colors.text }, language === 'en' && styles.langPillTextActive]}>English</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
         <View style={styles.row}>
-          <Text style={styles.rowTitle}>{t('settings.updatesOptIn')}</Text>
+          <Text style={[styles.rowTitle, { color: colors.text }]}>{t('settings.darkMode')}</Text>
+          <Switch
+            value={isDark}
+            onValueChange={async (v) => {
+              await setTheme(v ? 'dark' : 'light');
+            }}
+          />
+        </View>
+
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+        <View style={styles.row}>
+          <Text style={[styles.rowTitle, { color: colors.text }]}>{t('settings.updatesOptIn')}</Text>
           <Switch
             value={updatesOptIn}
             onValueChange={async (v) => {
@@ -103,19 +125,22 @@ export default function SettingsScreen({ navigation }) {
           />
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
         <TouchableOpacity style={styles.row} onPress={handleDeleteAccount} activeOpacity={0.85}>
-          <Text style={styles.dangerText}>מחיקת החשבון</Text>
+          <Text style={[styles.dangerText, { color: colors.danger }]}>{t('settings.deleteAccount')}</Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
-        style={styles.logoutBottomButton}
+        style={[
+          styles.logoutBottomButton,
+          { backgroundColor: isDark ? '#3B0A0E' : '#FFE4E6', borderColor: isDark ? '#7F1D1D' : '#FDA4AF' },
+        ]}
         onPress={handleLogout}
         activeOpacity={0.9}
       >
-        <Text style={styles.logoutBottomText}>{t('settings.logout')}</Text>
+        <Text style={[styles.logoutBottomText, { color: isDark ? '#FCA5A5' : '#BE123C' }]}>{t('settings.logout')}</Text>
       </TouchableOpacity>
     </View>
   );
