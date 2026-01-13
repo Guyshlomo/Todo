@@ -17,6 +17,7 @@ import { Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage, savePendingAvatar, uploadAvatarToSupabase } from '../lib/avatar';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useI18n } from '../i18n/I18nProvider';
 
 function isValidBirthdateString(s) {
   // Expected YYYY-MM-DD
@@ -33,6 +34,7 @@ function formatDateYYYYMMDD(date) {
 }
 
 export default function RegisterScreen({ navigation }) {
+  const { t } = useI18n();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
 
   const handleRegister = async () => {
     if (!canSubmit) {
-      Alert.alert('שגיאה', 'אנא מלא/י שם מלא ובדוק/י שכל השדות תקינים (תאריך: YYYY-MM-DD).');
+      Alert.alert(t('common.error'), t('auth.fullName'));
       return;
     }
 
@@ -109,7 +111,7 @@ export default function RegisterScreen({ navigation }) {
      
       
     } catch (e) {
-      Alert.alert('שגיאה', e?.message ?? 'משהו השתבש');
+      Alert.alert(t('common.error'), e?.message ?? (t('common.error')));
     } finally {
       setLoading(false);
     }
@@ -122,11 +124,11 @@ export default function RegisterScreen({ navigation }) {
     >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backRow}>
-          <Text style={styles.backText}>לחץ לחזור</Text>
+          <Text style={styles.backText}>{t('common.back')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>הרשמה</Text>
-        <Text style={styles.subtitle}>דקה ואת/ה בפנים</Text>
+        <Text style={styles.title}>{t('auth.register')}</Text>
+        <Text style={styles.subtitle}>{t('auth.tagline')}</Text>
 
         <View style={styles.form}>
         <View style={styles.avatarRow}>
@@ -162,10 +164,10 @@ export default function RegisterScreen({ navigation }) {
           <Text style={styles.avatarHint}>לחץ כדי להוסיף תמונת פרופיל</Text>
         </View>
 
-        <Text style={styles.label}>איך נקרא לך? (חובה)</Text>
+        <Text style={styles.label}>{t('auth.fullName')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="שם מלא"
+          placeholder={t('auth.fullName')}
           value={fullName}
           onChangeText={setFullName}
           autoCapitalize="words"
@@ -174,7 +176,7 @@ export default function RegisterScreen({ navigation }) {
           onSubmitEditing={() => emailRef.current?.focus?.()}
         />
 
-        <Text style={styles.label}>אימייל</Text>
+        <Text style={styles.label}>{t('auth.email')}</Text>
         <TextInput
           ref={emailRef}
           style={styles.input}
@@ -188,7 +190,7 @@ export default function RegisterScreen({ navigation }) {
           onSubmitEditing={() => passwordRef.current?.focus?.()}
         />
 
-        <Text style={styles.label}>סיסמה</Text>
+        <Text style={styles.label}>{t('auth.password')}</Text>
         <View style={styles.inputRow}>
           <TextInput
             ref={passwordRef}
@@ -215,7 +217,7 @@ export default function RegisterScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.label}>אימות סיסמה</Text>
+        <Text style={styles.label}>{t('auth.confirmPassword')}</Text>
         <View style={styles.inputRow}>
           <TextInput
             ref={confirmPasswordRef}
@@ -242,7 +244,7 @@ export default function RegisterScreen({ navigation }) {
         </View>
         {passwordMismatch ? <Text style={styles.inlineError}>{passwordMismatch}</Text> : null}
 
-        <Text style={styles.label}>תאריך לידה</Text>
+        <Text style={styles.label}>{t('personalDetails.birthdate')}</Text>
         <TouchableOpacity
           style={styles.dateField}
           onPress={() => {
@@ -268,7 +270,7 @@ export default function RegisterScreen({ navigation }) {
           {loading ? (
             <ActivityIndicator color="#FFF" animating={true} />
           ) : (
-            <Text style={styles.buttonText}>צור חשבון</Text>
+            <Text style={styles.buttonText}>{t('auth.signUp')}</Text>
           )}
         </TouchableOpacity>
         </View>

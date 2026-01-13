@@ -15,10 +15,12 @@ import { useIsFocused } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 import { ChevronLeft } from 'lucide-react-native';
 import { getLanguage, getUpdatesOptIn } from '../lib/localSettings';
+import { useI18n } from '../i18n/I18nProvider';
 
 const PRIVACY_POLICY_URL = 'https://to-do-b5e7d755.base44.app/';
 
 export default function ProfileScreen({ navigation }) {
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [userRow, setUserRow] = useState(null);
   const [savingAvatar, setSavingAvatar] = useState(false);
@@ -71,11 +73,19 @@ export default function ProfileScreen({ navigation }) {
   const displayName = useMemo(() => userRow?.display_name || 'משתמש', [userRow]);
 
   const handleOpenPrivacy = async () => {
-    try {
-      await Linking.openURL(PRIVACY_POLICY_URL);
-    } catch (_e) {
-      Alert.alert('שגיאה', 'לא הצלחנו לפתוח את מדיניות הפרטיות');
-    }
+    Alert.alert(t('profile.privacyConfirmTitle'), t('profile.privacyConfirmBody'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('profile.openSite'),
+        onPress: async () => {
+          try {
+            await Linking.openURL(PRIVACY_POLICY_URL);
+          } catch (_e) {
+            Alert.alert(t('common.error'), t('common.error'));
+          }
+        },
+      },
+    ]);
   };
 
   const handleChangeAvatar = async () => {
@@ -116,7 +126,7 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <Text style={styles.title}>הפרופיל שלי</Text>
+      <Text style={styles.title}>{t('profile.title')}</Text>
 
       <View style={styles.card}>
         <Text style={styles.nameCentered}>{displayName}</Text>
@@ -143,26 +153,26 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
 
 
-        <Text style={styles.note}>טיפ: תמונת פרופיל עוזרת לחברים לזהות אותך .</Text>
+        <Text style={styles.note}>{t('profile.tip')}</Text>
         <View style={styles.listCard}>
           <TouchableOpacity
             style={styles.rowPress}
             onPress={() => navigation.navigate('PersonalDetails')}
             activeOpacity={0.85}
           >
-            <Text style={styles.rowTitle}>פרטים אישיים</Text>
+            <Text style={styles.rowTitle}>{t('profile.personalDetails')}</Text>
             <View style={{ flex: 1 }} />
             <ChevronLeft size={18} color="#6C757D" />
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity style={styles.rowPress} onPress={handleOpenPrivacy} activeOpacity={0.85}>
-            <Text style={styles.rowTitle}>מדיניות פרטיות</Text>
+            <Text style={styles.rowTitle}>{t('profile.privacyPolicy')}</Text>
             <View style={{ flex: 1 }} />
             <ChevronLeft size={18} color="#6C757D" />
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity style={styles.rowPress} onPress={() => navigation.navigate('Settings')} activeOpacity={0.85}>
-            <Text style={styles.rowTitle}>הגדרות</Text>
+            <Text style={styles.rowTitle}>{t('profile.settings')}</Text>
             <View style={{ flex: 1 }} />
             <ChevronLeft size={18} color="#6C757D" />
           </TouchableOpacity>

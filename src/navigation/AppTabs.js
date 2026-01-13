@@ -4,10 +4,12 @@ import { View } from 'react-native';
 import { House, User } from 'lucide-react-native';
 import HomeStack from './HomeStack';
 import ProfileStack from './ProfileStack';
+import { useI18n } from '../i18n/I18nProvider';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
+  const { t } = useI18n();
   return (
     <Tab.Navigator
       initialRouteName="HomeTab"
@@ -38,12 +40,12 @@ export default function AppTabs() {
       <Tab.Screen
         name="HomeTab"
         component={HomeStack}
-        options={{ title: 'בית' }}
+        options={{ title: t('tabs.home') }}
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileStack}
-        options={{ title: 'הפרופיל שלי' }}
+        options={{ title: t('tabs.profile') }}
       />
     </Tab.Navigator>
   );

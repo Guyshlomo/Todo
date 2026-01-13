@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../i18n/I18nProvider';
+import { notifyGroupEvent } from '../lib/pushEvents';
 
 export default function JoinGroupScreen({ route, navigation }) {
+  const { t } = useI18n();
   const initialCode = route?.params?.code ?? '';
   const [code, setCode] = useState(String(initialCode));
   const [loading, setLoading] = useState(false);
@@ -17,7 +20,15 @@ export default function JoinGroupScreen({ route, navigation }) {
         p_invite_code: code.trim(),
       });
       if (error) throw error;
-      if (!groupId) throw new Error('לא הצלחנו להצטרף');
+      if (!groupId) throw new Error(t('common.error'));
+
+      // Best-effort: notify other members (push)
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        await notifyGroupEvent({ type: 'join', groupId, actorUserId: userData?.user?.id ?? null });
+      } catch (_e) {
+        // ignore
+      }
 
       Alert.alert('הצטרפת!', 'ברוך/ה הבא/ה לאתגר 🎯', [
         {
@@ -32,7 +43,7 @@ export default function JoinGroupScreen({ route, navigation }) {
         },
       ]);
     } catch (e) {
-      Alert.alert('שגיאה', e?.message ?? 'קוד לא תקין');
+      Alert.alert(t('common.error'), e?.message ?? t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -47,14 +58,14 @@ export default function JoinGroupScreen({ route, navigation }) {
             else navigation.navigate('App', { screen: 'HomeTab', params: { screen: 'HomeMain' } });
           }}
         >
-          <Text style={styles.back}>חזרה</Text>
+          <Text style={styles.back}>{t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הצטרפות לאתגר</Text>
+        <Text style={styles.title}>{t('join.title')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>הכנס/י קוד הצטרפות</Text>
+        <Text style={styles.label}>{t('join.codeLabel')}</Text>
         <TextInput
           style={styles.input}
           value={code}
@@ -71,7 +82,7 @@ export default function JoinGroupScreen({ route, navigation }) {
           {loading ? (
             <ActivityIndicator color="#FFF" animating={true} />
           ) : (
-            <Text style={styles.buttonText}>הצטרף</Text>
+            <Text style={styles.buttonText}>{t('join.join')}</Text>
           )}
         </TouchableOpacity>
       </View>

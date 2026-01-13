@@ -1,7 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useI18n } from '../i18n/I18nProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const HOME_ORDER_KEY = 'todo:home:order:v1';
+
+function uniqIds(ids) {
+  const out = [];
+  const seen = new Set();
+  for (const id of ids || []) {
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+
+function sortByOrder(items, orderIds) {
+  const order = Array.isArray(orderIds) ? orderIds : [];
+  const idx = new Map(order.map((id, i) => [id, i]));
+  const withIndex = (items || []).map((g, i) => ({
+    g,
+    key: g?.id,
+    ord: idx.has(g?.id) ? idx.get(g.id) : Number.MAX_SAFE_INTEGER,
+    fallback: i,
+  }));
+  withIndex.sort((a, b) => (a.ord - b.ord) || (a.fallback - b.fallback));
+  return withIndex.map((x) => x.g);
+}
+
+function moveSelectedToTop(list, selectedIds) {
+  const sel = new Set(selectedIds || []);
+  const top = [];
+  const rest = [];
+  for (const item of list || []) {
+    if (sel.has(item.id)) top.push(item);
+    else rest.push(item);
+  }
+  return [...top, ...rest];
+}
+
+function moveSelectedToBottom(list, selectedIds) {
+  const sel = new Set(selectedIds || []);
+  const top = [];
+  const bottom = [];
+  for (const item of list || []) {
+    if (sel.has(item.id)) bottom.push(item);
+    else top.push(item);
+  }
+  return [...top, ...bottom];
+}
 
 function formatValidity(challenge) {
   const s = challenge?.start_date ?? null;
@@ -10,11 +60,43 @@ function formatValidity(challenge) {
   return `${s} - ${e}`;
 }
 
+function parseYYYYMMDDLocal(s) {
+  if (!s || typeof s !== 'string') return null;
+  const [y, m, d] = s.split('-').map((x) => Number.parseInt(x, 10));
+  if (!y || !m || !d) return null;
+  const dt = new Date(y, m - 1, d);
+  return Number.isNaN(dt.getTime()) ? null : dt;
+}
+
+function endOfLocalDay(date) {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+function formatCountdown({ language, endDateString, now }) {
+  const end = parseYYYYMMDDLocal(endDateString);
+  if (!end) return null;
+  const deadline = endOfLocalDay(end);
+  const diffMs = deadline.getTime() - now.getTime();
+  if (diffMs <= 0) return language === 'en' ? 'Completed' : 'האתגר הושלם';
+  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+  return language === 'en' ? `${days}d ${hours}h left` : `נותרו ${days} ימים ${hours} שעות`;
+}
+
 export default function HomeScreen({ navigation }) {
+  const { t, language } = useI18n();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
+  const [now, setNow] = useState(() => new Date());
+  const [editMode, setEditMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(() => new Set());
+  const [orderIds, setOrderIds] = useState([]);
+  const [myRankByGroupId, setMyRankByGroupId] = useState({});
 
   useEffect(() => {
     if (isFocused) {
@@ -22,9 +104,73 @@ export default function HomeScreen({ navigation }) {
     }
   }, [isFocused]);
 
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const raw = await AsyncStorage.getItem(HOME_ORDER_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(parsed)) setOrderIds(uniqIds(parsed));
+      } catch (_e) {
+        // ignore
+      }
+    })();
+  }, []);
+
+  const persistOrder = async (ids) => {
+    try {
+      await AsyncStorage.setItem(HOME_ORDER_KEY, JSON.stringify(uniqIds(ids)));
+    } catch (_e) {
+      // ignore
+    }
+  };
+
+  function rankLabel(rank) {
+    if (!rank || typeof rank !== 'number') return null;
+    if (language === 'en') return `Rank #${rank}`;
+    if (rank === 1) return 'את/ה מקום ראשון';
+    if (rank === 2) return 'את/ה מקום שני';
+    if (rank === 3) return 'את/ה מקום שלישי';
+    return `את/ה מקום ${rank}`;
+  }
+
+  const computeMyRanks = async (groupIds) => {
+    try {
+      if (!Array.isArray(groupIds) || groupIds.length === 0) return;
+      const { data, error } = await supabase.rpc('get_my_group_ranks', { p_group_ids: groupIds });
+      if (error) throw error;
+      const next = {};
+      for (const gId of groupIds) next[String(gId)] = null;
+      for (const row of data || []) {
+        if (!row?.group_id) continue;
+        next[String(row.group_id)] = typeof row.my_rank === 'number' ? row.my_rank : null;
+      }
+      setMyRankByGroupId(next);
+    } catch (e) {
+      console.log('computeMyRanks failed:', e?.message ?? e);
+    }
+  };
+
   const fetchGroups = async () => {
     try {
       setLoading(true);
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData?.user?.id ?? null;
+      let hiddenIds = new Set();
+      if (userId) {
+        const { data: hiddenRows, error: hiddenErr } = await supabase
+          .from('user_hidden_groups')
+          .select('group_id')
+          .eq('user_id', userId);
+        if (!hiddenErr && Array.isArray(hiddenRows)) {
+          hiddenIds = new Set(hiddenRows.map((r) => r.group_id).filter(Boolean));
+        }
+      }
+
       const { data, error } = await supabase
         .from('groups')
         .select(`
@@ -34,7 +180,20 @@ export default function HomeScreen({ navigation }) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setGroups(data || []);
+      const fetchedAll = data || [];
+      const fetched = fetchedAll.filter((g) => !hiddenIds.has(g.id));
+      const sorted = sortByOrder(fetched, orderIds);
+      setGroups(sorted);
+      // Append new IDs to local order so reordering persists across refreshes
+      const fetchedIds = fetched.map((g) => g.id).filter(Boolean);
+      const nextOrder = uniqIds([...(orderIds || []), ...fetchedIds]);
+      if (nextOrder.length !== (orderIds || []).length) {
+        setOrderIds(nextOrder);
+        persistOrder(nextOrder);
+      }
+
+      // Rank is per challenge/group (XP differs per group_id), so compute per group_id from reports.
+      await computeMyRanks(fetched.map((g) => g.id).filter(Boolean));
     } catch (error) {
       console.error('Error fetching groups:', error.message);
     } finally {
@@ -51,61 +210,171 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  const progress = 0.67; // TODO: compute from reports per current period
+  const toggleSelect = (groupId) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(groupId)) next.delete(groupId);
+      else next.add(groupId);
+      return next;
+    });
+  };
 
-  const renderGroupItem = ({ item }) => (
+  const exitEditMode = () => {
+    setEditMode(false);
+    setSelectedIds(new Set());
+  };
+
+  const applyReorder = async (nextGroups) => {
+    setGroups(nextGroups);
+    const ids = nextGroups.map((g) => g.id).filter(Boolean);
+    setOrderIds(ids);
+    await persistOrder(ids);
+  };
+
+  const handleMoveTop = async () => {
+    if (selectedIds.size === 0) return;
+    const next = moveSelectedToTop(groups, selectedIds);
+    await applyReorder(next);
+  };
+
+  const handleMoveBottom = async () => {
+    if (selectedIds.size === 0) return;
+    const next = moveSelectedToBottom(groups, selectedIds);
+    await applyReorder(next);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    const count = selectedIds.size;
+    Alert.alert(
+      'מחיקה מהרשימה',
+      `בטוח/ה שתרצה/י להסיר ${count} אתגרים ממסך הבית שלך? זה ישפיע רק עליך, ולא ימחק לחברים.`,
+      [
+        { text: 'ביטול', style: 'cancel' },
+        {
+          text: 'הסר/י',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const { data: userData } = await supabase.auth.getUser();
+              const userId = userData?.user?.id ?? null;
+              if (!userId) throw new Error('משתמש לא מחובר');
+
+              const ids = Array.from(selectedIds);
+              for (const id of ids) {
+                const { error } = await supabase
+                  .from('user_hidden_groups')
+                  .upsert({ user_id: userId, group_id: id }, { onConflict: 'user_id,group_id' });
+                if (error) throw error;
+              }
+              const remaining = groups.filter((g) => !selectedIds.has(g.id));
+              await applyReorder(remaining);
+              exitEditMode();
+            } catch (e) {
+              Alert.alert('שגיאה', e?.message ?? 'לא הצלחנו להסיר את האתגרים');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const renderGroupItem = ({ item }) => {
+    const ch = item.challenges?.[0] ?? null;
+    const countdown = formatCountdown({ language, endDateString: ch?.end_date ?? null, now });
+    return (
     // In MVP: one challenge == one group (group exists implicitly per challenge).
     <TouchableOpacity 
       style={styles.groupCard}
-      onPress={() => navigation.navigate('GroupDetail', { groupId: item.id })}
+      onPress={() => {
+        if (editMode) toggleSelect(item.id);
+        else navigation.navigate('GroupDetail', { groupId: item.id });
+      }}
       activeOpacity={0.85}
     >
       <View style={styles.cardHeader}>
         <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
         <View style={styles.groupInfo}>
-          <Text style={styles.groupName}>{item.challenges?.[0]?.name || item.name}</Text>
+          <View style={styles.nameRow}>
+            {editMode ? (
+              <View style={[styles.checkbox, selectedIds.has(item.id) && styles.checkboxOn]}>
+                <Text style={styles.checkboxText}>{selectedIds.has(item.id) ? '✓' : ''}</Text>
+              </View>
+            ) : null}
+            <Text style={styles.groupName}>{item.challenges?.[0]?.name || item.name}</Text>
+          </View>
           <Text style={styles.challengeInfo}>
             {formatValidity(item.challenges?.[0]) || 'תוקף האתגר לא הוגדר'}
           </Text>
+          {countdown ? <Text style={styles.countdownText}>{countdown}</Text> : null}
         </View>
       </View>
 
-      <View style={styles.progressWrap}>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${Math.round(progress * 100)}%` }]} />
-        </View>
-        <Text style={styles.progressText}>{Math.round(progress * 100)}%</Text>
-      </View>
 
       <View style={styles.cardFooter}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>מוביל/ה 🏆</Text>
+          <Text style={styles.badgeText}>
+            {rankLabel(myRankByGroupId?.[item.id]) || (language === 'en' ? 'No rank yet' : 'אין דירוג עדיין')}
+          </Text>
         </View>
-        <Text style={styles.streakText}>🔥 רצף: 4</Text>
       </View>
     </TouchableOpacity>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.editTopBtn}
+          onPress={() => {
+            if (editMode) exitEditMode();
+            else setEditMode(true);
+          }}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.editTopIcon}>{editMode ? '✅' : '✏️'}</Text>
+        </TouchableOpacity>
         <View style={styles.headerRight}>
-          <Text style={styles.title}>האתגרים שלי</Text>
+          <Text style={styles.title}>{editMode ? 'עריכת אתגרים' : t('home.title')}</Text>
         </View>
       </View>
+
+      {editMode ? (
+        <View style={styles.editBar}>
+          <Text style={styles.editCount}>מסומנים: {selectedIds.size}</Text>
+          <View style={styles.editActions}>
+            <TouchableOpacity style={styles.editBtn} onPress={handleMoveTop} disabled={selectedIds.size === 0}>
+              <Text style={styles.editBtnText}>למעלה</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.editBtn} onPress={handleMoveBottom} disabled={selectedIds.size === 0}>
+              <Text style={styles.editBtnText}>למטה</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.editBtn, styles.editBtnDanger]} onPress={handleDeleteSelected} disabled={selectedIds.size === 0}>
+              <Text style={styles.editBtnText}>הסר/י</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.editBtn, styles.editBtnGhost]} onPress={exitEditMode}>
+              <Text style={[styles.editBtnText, styles.editBtnGhostText]}>סיום</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : null}
 
       {loading ? (
         <ActivityIndicator size="large" color="#6366F1" style={{ marginTop: 50 }} animating={true} />
       ) : groups.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>עדיין אין לך אתגרים</Text>
-          <Text style={styles.emptySubText}>צור/י אתגר חדש כדי להתחיל 💪</Text>
+          <Text style={styles.emptyText}>{t('home.emptyTitle')}</Text>
+          <Text style={styles.emptySubText}>{t('home.emptySubtitle')}</Text>
           
           <TouchableOpacity 
             style={styles.emptyButton}
             onPress={() => navigation.navigate('CreateGroup')}
           >
-            <Text style={styles.emptyButtonText}>צור אתגר חדש</Text>
+            <Text style={styles.emptyButtonText}>{t('home.createChallenge')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -122,7 +391,7 @@ export default function HomeScreen({ navigation }) {
         style={styles.fab}
         onPress={() => navigation.navigate('CreateGroup')}
       >
-        <Text style={styles.fabText}>צור אתגר חדש</Text>
+        <Text style={styles.fabText}>{t('home.createChallenge')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -130,7 +399,7 @@ export default function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('Join')}
         activeOpacity={0.85}
       >
-        <Text style={styles.joinPillText}>להצטרפות לאתגר</Text>
+        <Text style={styles.joinPillText}>{t('home.joinChallenge')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -148,9 +417,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+    position: 'relative',
   },
   headerRight: {
     alignItems: 'flex-end',
+  },
+  editTopBtn: {
+    position: 'absolute',
+    left: 20,
+    top: 58,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#F1F3F5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editTopIcon: {
+    fontSize: 18,
   },
   title: {
     fontSize: 28,
@@ -184,6 +470,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
   },
+  nameRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 8,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+  },
+  checkboxOn: {
+    borderColor: '#6366F1',
+    backgroundColor: '#EEF2FF',
+  },
+  checkboxText: {
+    fontWeight: '900',
+    color: '#4F46E5',
+    fontSize: 14,
+    marginTop: -1,
+  },
   groupIcon: {
     fontSize: 40,
     marginLeft: 15,
@@ -201,6 +512,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6C757D',
     marginTop: 4,
+  },
+  countdownText: {
+    fontSize: 12,
+    color: '#111827',
+    marginTop: 6,
+    fontWeight: '900',
   },
   progressWrap: {
     flexDirection: 'row-reverse',
@@ -248,6 +565,50 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#FD7E14',
+  },
+  editBar: {
+    marginTop: -10,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#F1F3F5',
+    borderRadius: 16,
+    padding: 12,
+  },
+  editCount: {
+    textAlign: 'right',
+    fontWeight: '900',
+    color: '#1A1C1E',
+  },
+  editActions: {
+    marginTop: 10,
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  editBtn: {
+    backgroundColor: '#EEF2FF',
+    borderWidth: 1,
+    borderColor: '#E0E7FF',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+  },
+  editBtnDanger: {
+    backgroundColor: '#FFF0F0',
+    borderColor: '#FFD6D6',
+  },
+  editBtnGhost: {
+    backgroundColor: '#FFF',
+    borderColor: '#F1F3F5',
+  },
+  editBtnText: {
+    fontWeight: '900',
+    color: '#4F46E5',
+  },
+  editBtnGhostText: {
+    color: '#495057',
   },
   emptyState: {
     flex: 1,

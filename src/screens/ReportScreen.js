@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image, ScrollView, KeyboardAvoidingView, Platform, Animated, Easing } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage } from '../lib/avatar';
 import { uploadProofImage } from '../lib/proofs';
 import { Camera, Type, Check, X } from 'lucide-react-native';
+import { notifyGroupEvent } from '../lib/pushEvents';
 
 export default function ReportScreen({ route, navigation }) {
   const { challengeId, groupId } = route.params;
@@ -12,10 +13,62 @@ export default function ReportScreen({ route, navigation }) {
   const [isDone, setIsDone] = useState(true);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [resultOverlay, setResultOverlay] = useState(null); // 'success' | 'fail' | null
+  const [resultText, setResultText] = useState('');
+  const [resultSubText, setResultSubText] = useState('');
   
   const [proofType, setProofType] = useState(null); // 'text' or 'image'
   const [proofText, setProofText] = useState('');
   const [proofImage, setProofImage] = useState(null);
+
+  const overlayProgress = React.useRef(new Animated.Value(0)).current;
+  const shakeX = React.useRef(new Animated.Value(0)).current;
+
+  const playSuccessOverlay = ({ title, subtitle }) => {
+    setResultOverlay('success');
+    setResultText(title || 'כל הכבוד 🎈');
+    setResultSubText(subtitle || '');
+    overlayProgress.setValue(0);
+    Animated.timing(overlayProgress, {
+      toValue: 1,
+      duration: 350,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+    setTimeout(() => {
+      setResultOverlay(null);
+      navigation.goBack();
+    }, 2000);
+  };
+
+  const playFailOverlay = ({ title, subtitle }) => {
+    setResultOverlay('fail');
+    setResultText(title || 'לא נשמרו נקודות');
+    setResultSubText(subtitle || '');
+    overlayProgress.setValue(0);
+    shakeX.setValue(0);
+
+    Animated.parallel([
+      Animated.timing(overlayProgress, {
+        toValue: 1,
+        duration: 700,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.timing(shakeX, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.timing(shakeX, { toValue: -1, duration: 350, useNativeDriver: true }),
+        Animated.timing(shakeX, { toValue: 1, duration: 350, useNativeDriver: true }),
+        Animated.timing(shakeX, { toValue: -1, duration: 350, useNativeDriver: true }),
+        Animated.timing(shakeX, { toValue: 0, duration: 350, useNativeDriver: true }),
+      ]),
+    ]).start();
+
+    setTimeout(() => {
+      setResultOverlay(null);
+      navigation.goBack();
+    }, 950);
+  };
 
   useEffect(() => {
     const fetchChallenge = async () => {
@@ -88,13 +141,18 @@ export default function ReportScreen({ route, navigation }) {
         }
       }
       
+      const pointsEarned =
+        challenge.type === 'binary'
+          ? (isDone ? 10 : 0)
+          : 10;
+
       const payload = {
         challenge_id: challengeId,
         group_id: groupId,
         user_id: user.id,
         value: challenge.type === 'binary' ? (isDone ? 1 : 0) : parseInt(value),
         is_done: challenge.type === 'binary' ? isDone : true,
-        points_earned: 10,
+        points_earned: pointsEarned,
         proof_text: proofType === 'text' ? proofText.trim() : null,
         proof_image_url: uploadedImageUrl,
       };
@@ -132,18 +190,49 @@ export default function ReportScreen({ route, navigation }) {
       const didIncrease =
         typeof totalXpBefore === 'number' &&
         typeof totalXpAfter === 'number' &&
-        totalXpAfter >= totalXpBefore + 10;
+        totalXpAfter >= totalXpBefore + pointsEarned;
+
+      // UX: for binary reports we show on-screen animation instead of alerts.
+      if (challenge.type === 'binary') {
+        if (isDone && pointsEarned > 0) {
+          // Best-effort: notify other members (push)
+          try {
+            await notifyGroupEvent({ type: 'report', groupId, actorUserId: user.id });
+          } catch (_e) {
+            // ignore
+          }
+
+          const subtitle =
+            totalXpAfter === null
+              ? `+${pointsEarned} XP`
+              : `+${pointsEarned} XP · סה״כ ${totalXpAfter} XP`;
+          playSuccessOverlay({ title: 'נשמר! 🎉', subtitle });
+        } else {
+          // Best-effort: also notify on report submission even if "no" (still a report)
+          try {
+            await notifyGroupEvent({ type: 'report', groupId, actorUserId: user.id });
+          } catch (_e) {
+            // ignore
+          }
+
+          // "No" => no XP
+          playFailOverlay({ title: 'לא נורא', subtitle: 'לא נשמרו נקודות הפעם' });
+        }
+        return;
+      }
 
       const message =
         totalXpAfter === null
-          ? 'הדיווח נשמר +10 XP'
+          ? (pointsEarned > 0 ? `הדיווח נשמר +${pointsEarned} XP` : 'הדיווח נשמר')
           : didIncrease
-            ? `הדיווח נשמר +10 XP\nסה״כ: ${totalXpAfter} XP`
-            : `הדיווח נשמר +10 XP\nאבל ה-XP לא עודכן בשרת (סה״כ: ${totalXpAfter} XP)\nבדוק/י Trigger/RLS`;
+            ? (pointsEarned > 0
+                ? `הדיווח נשמר +${pointsEarned} XP\nסה״כ: ${totalXpAfter} XP`
+                : `הדיווח נשמר\nסה״כ: ${totalXpAfter} XP`)
+            : (pointsEarned > 0
+                ? `הדיווח נשמר +${pointsEarned} XP\nאבל ה-XP לא עודכן בשרת (סה״כ: ${totalXpAfter} XP)\nבדוק/י Trigger/RLS`
+                : `הדיווח נשמר\nאבל ה-XP לא עודכן בשרת (סה״כ: ${totalXpAfter} XP)\nבדוק/י Trigger/RLS`);
 
-      Alert.alert('איזה אלוף!', message, [
-        { text: 'יש!', onPress: () => navigation.goBack() }
-      ]);
+      Alert.alert('איזה אלוף!', message, [{ text: 'יש!', onPress: () => navigation.goBack() }]);
     } catch (error) {
       console.error('Full report submit error:', error);
       Alert.alert('שגיאה', error.message || 'לא הצלחנו לשלוח את הדיווח');
@@ -168,6 +257,15 @@ export default function ReportScreen({ route, navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      {resultOverlay ? (
+        <ResultOverlay
+          kind={resultOverlay}
+          title={resultText}
+          subtitle={resultSubText}
+          progress={overlayProgress}
+          shakeX={shakeX}
+        />
+      ) : null}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backButton}>ביטול</Text>
@@ -210,18 +308,9 @@ export default function ReportScreen({ route, navigation }) {
         )}
 
         <View style={styles.proofSection}>
-          <Text style={styles.proofLabel}>הוכחה (אופציונלי)</Text>
+          <Text style={styles.proofLabel}>שתף הוכחה</Text>
           <View style={styles.proofTabs}>
-            <TouchableOpacity 
-              style={[styles.proofTab, proofType === 'text' && styles.proofTabActive]}
-              onPress={() => {
-                setProofType(proofType === 'text' ? null : 'text');
-                setProofImage(null);
-              }}
-            >
-              <Type size={20} color={proofType === 'text' ? '#FFF' : '#6366F1'} />
-              <Text style={[styles.proofTabText, proofType === 'text' && styles.proofTabActiveText]}>טקסט</Text>
-            </TouchableOpacity>
+            
 
             <TouchableOpacity 
               style={[styles.proofTab, proofType === 'image' && styles.proofTabActive]}
@@ -276,9 +365,35 @@ export default function ReportScreen({ route, navigation }) {
           )}
         </TouchableOpacity>
         
-        <Text style={styles.helperText}>יש לך זמן 💪</Text>
+        
       </ScrollView>
     </KeyboardAvoidingView>
+  );
+}
+
+function ResultOverlay({ kind, title, subtitle, progress, shakeX }) {
+  const overlayOpacity = progress.interpolate({ inputRange: [0, 1], outputRange: [0.0, 1] });
+  const cardScale = progress.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] });
+  const failTranslateX = shakeX.interpolate({ inputRange: [-1, 1], outputRange: [-10, 10] });
+
+  return (
+    <Animated.View style={[styles.overlayWrap, { opacity: overlayOpacity }]} pointerEvents="none">
+      <Animated.View
+        style={[
+          styles.overlayCard,
+          {
+            transform: [
+              { scale: cardScale },
+              ...(kind === 'fail' ? [{ translateX: failTranslateX }] : []),
+            ],
+          },
+        ]}
+      >
+        <Text style={styles.overlayIcon}>{kind === 'success' ? '🎈🎈' : '✕'}</Text>
+        <Text style={styles.overlayTitle}>{title}</Text>
+        {subtitle ? <Text style={styles.overlaySubtitle}>{subtitle}</Text> : null}
+      </Animated.View>
+    </Animated.View>
   );
 }
 
@@ -286,6 +401,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+  },
+  overlayWrap: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+    backgroundColor: 'rgba(0,0,0,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  overlayCard: {
+    width: '86%',
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    paddingVertical: 22,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#F1F3F5',
+    alignItems: 'center',
+  },
+  overlayIcon: {
+    fontSize: 42,
+    marginBottom: 6,
+  },
+  overlayTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#1A1C1E',
+    textAlign: 'center',
+  },
+  overlaySubtitle: {
+    marginTop: 6,
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#495057',
+    textAlign: 'center',
   },
   center: {
     flex: 1,

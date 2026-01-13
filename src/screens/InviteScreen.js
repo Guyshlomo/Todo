@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Share, ActivityIndicator, Ale
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../i18n/I18nProvider';
 
 export default function InviteScreen({ route, navigation }) {
+  const { t } = useI18n();
   const { groupId } = route.params;
   const [loading, setLoading] = useState(true);
   const [inviteCode, setInviteCode] = useState('');
@@ -46,7 +48,7 @@ export default function InviteScreen({ route, navigation }) {
         setInviteCode(data?.invite_code ?? '');
         setGroupName(data?.name ?? '');
       } catch (e) {
-        Alert.alert('שגיאה', e?.message ?? 'לא הצלחנו לטעון הזמנה');
+        Alert.alert(t('common.error'), e?.message ?? t('common.error'));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -69,17 +71,17 @@ export default function InviteScreen({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>חזרה</Text>
+          <Text style={styles.back}>{t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הזמנה לאתגר</Text>
+        <Text style={styles.title}>{t('invite.title')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>הזמן חברים לאתגר</Text>
+        <Text style={styles.cardTitle}>{t('invite.cardTitle')}</Text>
         <Text style={styles.cardSubtitle}>{groupName}</Text>
 
-        <Text style={styles.label}>קוד הצטרפות</Text>
+        <Text style={styles.label}>{t('invite.joinCode')}</Text>
         <View style={styles.codeBox}>
           <Text style={styles.codeText}>{inviteCode}</Text>
         </View>
@@ -88,13 +90,13 @@ export default function InviteScreen({ route, navigation }) {
           style={styles.secondaryButton}
           onPress={async () => {
             await Clipboard.setStringAsync(inviteCode);
-            Alert.alert('הועתק', 'קוד ההצטרפות הועתק ללוח');
+            Alert.alert(t('common.save'), t('invite.copyCode'));
           }}
         >
-          <Text style={styles.secondaryText}>העתק קוד</Text>
+          <Text style={styles.secondaryText}>{t('invite.copyCode')}</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.label, { marginTop: 14 }]}>לינק הצטרפות</Text>
+        <Text style={[styles.label, { marginTop: 14 }]}>{t('invite.joinLink')}</Text>
         <View style={styles.linkBox}>
           <Text style={styles.linkText} numberOfLines={2}>
             {inviteLink}
@@ -106,11 +108,12 @@ export default function InviteScreen({ route, navigation }) {
           onPress={async () => {
             const shareName = userName || 'חבר/ה';
             await Share.share({
+              // Spec requires this exact Hebrew text in share:
               message: `${shareName} מאתגר אותך ב-Todo\n\nקוד הצטרפות: ${inviteCode}\nלינק: ${inviteLink}`,
             });
           }}
         >
-          <Text style={styles.primaryText}>שתף לינק</Text>
+          <Text style={styles.primaryText}>{t('invite.shareLink')}</Text>
         </TouchableOpacity>
       </View>
     </View>

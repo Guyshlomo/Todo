@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, 
 import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { ChevronLeft, Flame, Trophy, Calendar, CheckCircle2, User as UserIcon, X } from 'lucide-react-native';
+import { useI18n } from '../i18n/I18nProvider';
 
 function endOfLocalDay(date) {
   const d = new Date(date);
@@ -20,19 +21,80 @@ function parseYYYYMMDDLocal(s) {
 
 export default function GroupDetailScreen({ route, navigation }) {
   const { groupId } = route.params;
+  const { language } = useI18n();
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userReports, setUserReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   const isFocused = useIsFocused();
+
+  const handleLeaveChallenge = async () => {
+    Alert.alert(
+      'יציאה מהאתגר',
+      'בטוח/ה שתרצה/י לצאת מהאתגר? האתגר יוסר רק אצלך, ושאר המשתתפים יישארו.',
+      [
+        { text: 'ביטול', style: 'cancel' },
+        {
+          text: 'צא/י',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const { error } = await supabase.rpc('leave_group', { p_group_id: groupId });
+              if (error) {
+                console.log('leave_group RPC error:', error);
+                // Common: RPC missing / not deployed yet
+                if (String(error?.message || '').toLowerCase().includes('could not find the function')) {
+                  throw new Error(
+                    'חסרה פונקציה leave_group ב-Supabase.\n\nמה לעשות:\n1) להריץ ב-Supabase SQL Editor את supabase/leave_group.sql\n2) ואז לעשות Reload ל-Schema (Settings → API → Reload schema) או להמתין ~דקה\n3) לסגור/לפתוח את האפליקציה ולנסות שוב.'
+                  );
+                }
+                throw error;
+              }
+              Alert.alert('יצאת', 'האתגר הוסר מהרשימה שלך');
+              if (navigation.canGoBack()) {
+                try {
+                  navigation.popToTop();
+                } catch (_e) {
+                  navigation.goBack();
+                }
+              }
+            } catch (e) {
+              Alert.alert('שגיאה', e?.message ?? 'לא הצלחנו לצאת מהאתגר');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     if (isFocused) {
       fetchGroupDetails();
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const countdownText = (endDateString) => {
+    const end = parseYYYYMMDDLocal(endDateString);
+    if (!end) return null;
+    const deadline = endOfLocalDay(end);
+    const diffMs = deadline.getTime() - now.getTime();
+    if (diffMs <= 0) return language === 'en' ? 'Completed' : 'האתגר הושלם';
+    const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+    return language === 'en' ? `${days}d ${hours}h left` : `נותרו ${days} ימים ${hours} שעות`;
+  };
 
   const fetchGroupDetails = async () => {
     try {
@@ -55,7 +117,19 @@ export default function GroupDetailScreen({ route, navigation }) {
 
       if (membersError) throw membersError;
 
-      // RPC may not include up-to-date XP. Pull XP (total_points) from `users` table for trust.
+      // Points are per-group (group_id), not global user points.
+      // Use server RPC to avoid RLS issues and keep leaderboard correct per challenge.
+      let pointsByUserId = {};
+      try {
+        const { data: ptsRows, error: ptsErr } = await supabase.rpc('get_group_points', { p_group_id: groupId });
+        if (!ptsErr && Array.isArray(ptsRows)) {
+          pointsByUserId = Object.fromEntries(ptsRows.map((r) => [r.user_id, r.points || 0]));
+        }
+      } catch (_e) {
+        // ignore, fallback to 0 below
+      }
+
+      // Pull display_name/avatar from `users` table (names are synced from auth metadata).
       const memberIds = (members || []).map((m) => m.user_id).filter(Boolean);
       let usersById = {};
       if (memberIds.length > 0) {
@@ -70,10 +144,17 @@ export default function GroupDetailScreen({ route, navigation }) {
 
       const combined = (members || []).map((m) => {
         const u = usersById[m.user_id] || null;
+        const bestName =
+          u?.display_name ||
+          m.display_name ||
+          m.name ||
+          m.full_name ||
+          m.user_display_name ||
+          'משתמש';
         return {
           id: m.user_id,
-          name: u?.display_name || m.display_name || 'משתמש',
-          points: typeof u?.total_points === 'number' ? u.total_points : 0,
+          name: bestName,
+          points: typeof pointsByUserId[m.user_id] === 'number' ? pointsByUserId[m.user_id] : 0,
           streak: m.streak || 0,
           avatar_url: u?.avatar_url || m.avatar_url,
         };
@@ -156,13 +237,18 @@ export default function GroupDetailScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => navigation.navigate('Invite', { groupId })} style={styles.headerIconBtn}>
+            <Text style={styles.settingsIcon}>⚙️</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLeaveChallenge} style={[styles.headerIconBtn, styles.deleteIconBtn]}>
+            <Text style={styles.deleteIcon}>🚪</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.headerTitle} numberOfLines={1}>{challenge?.name || group.name}</Text>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ChevronLeft color="#6366F1" size={24} />
           <Text style={styles.backButton}>חזרה</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>{challenge?.name || group.name}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Invite', { groupId })}>
-          <Text style={styles.settingsIcon}>⚙️</Text>
         </TouchableOpacity>
       </View>
 
@@ -174,7 +260,7 @@ export default function GroupDetailScreen({ route, navigation }) {
           </View>
           
           <View style={styles.metaRow}>
-            <Calendar color="rgba(255,255,255,0.8)" size={16} />
+            <Calendar color="rgba(255,255,255,0.8)" size={16} style={{ marginRight: 5 }}/>
             <Text style={styles.challengeMeta}>
               {challenge?.start_date && challenge?.end_date
                 ? `${challenge.start_date} - ${challenge.end_date}`
@@ -190,23 +276,18 @@ export default function GroupDetailScreen({ route, navigation }) {
             )}
           </View>
 
-          <View style={styles.progressSection}>
-            <View style={styles.progressLabelRow}>
-              <Text style={styles.progressLabel}>התקדמות הקבוצה</Text>
-              <Text style={styles.progressPercent}>70%</Text>
-            </View>
-            <View style={styles.progressContainer}>
-              <View style={[styles.progressBar, { width: '70%' }]} />
-            </View>
-          </View>
-          
+          {!isChallengeCompleted && challenge?.end_date ? (
+            <Text style={styles.countdownUnderCard}>{countdownText(challenge.end_date)}</Text>
+          ) : null}
+
+         
           <TouchableOpacity 
             style={[styles.reportButton, isChallengeCompleted && styles.reportButtonDisabled]}
             onPress={() => navigation.navigate('Report', { challengeId: challenge?.id, groupId })}
             disabled={isChallengeCompleted}
           >
             <Text style={styles.reportButtonText}>
-              {isChallengeCompleted ? 'האתגר הסתיים' : 'דווח עכשיו ⚡'}
+              {isChallengeCompleted ? 'האתגר הסתיים' : 'האתגר בוצע⚡'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -324,6 +405,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F1F3F5',
   },
+  headerActions: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 10,
+  },
+  headerIconBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+  },
+  deleteIconBtn: {
+    backgroundColor: '#FFF0F0',
+  },
   backBtn: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
@@ -344,6 +438,9 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     fontSize: 22,
+  },
+  deleteIcon: {
+    fontSize: 20,
   },
   scrollContent: {
     paddingBottom: 40,
@@ -380,6 +477,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     fontSize: 14,
     fontWeight: '600',
+    marginRight: 7,
   },
   statusBadge: {
     alignSelf: 'flex-end',
@@ -393,11 +491,20 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: '900',
     fontSize: 14,
+    marginRight: 7,
   },
   statusTextDone: {
     color: '#FFF',
     fontWeight: '900',
     fontSize: 14,
+  },
+  countdownUnderCard: {
+    color: 'rgba(255,255,255,0.95)',
+    fontWeight: '900',
+    marginTop: -10,
+    marginBottom: 18,
+    textAlign: 'right',
+    marginRight: 7,
   },
   progressSection: {
     width: '100%',

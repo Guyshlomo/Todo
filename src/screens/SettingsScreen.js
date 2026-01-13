@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
-import { getLanguage, getUpdatesOptIn, setLanguage, setUpdatesOptIn } from '../lib/localSettings';
+import { getUpdatesOptIn, setUpdatesOptIn } from '../lib/localSettings';
+import { useI18n } from '../i18n/I18nProvider';
 
 export default function SettingsScreen({ navigation }) {
-  const [language, setLanguageState] = useState('he'); // 'he' | 'en'
+  const { t, language, setLanguage } = useI18n();
   const [updatesOptIn, setUpdatesOptInState] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      const [lang, updates] = await Promise.all([getLanguage(), getUpdatesOptIn()]);
+      const updates = await getUpdatesOptIn();
       if (!mounted) return;
-      setLanguageState(lang);
       setUpdatesOptInState(updates);
     };
     load();
@@ -23,12 +23,12 @@ export default function SettingsScreen({ navigation }) {
 
   const handleDeleteAccount = async () => {
     Alert.alert(
-      'מחיקת החשבון',
-      'האם אתה בטוח/ה בפעולה זו?\n\nזה ימחק את הפרופיל שלך (טבלת users) וינתק אותך. למחיקה מלאה של חשבון ההתחברות יידרש טיפול בצד שרת.',
+      t('settings.confirmDeleteTitle'),
+      t('settings.confirmDeleteBody'),
       [
-        { text: 'ביטול', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'מחק',
+          text: language === 'en' ? 'Delete' : 'מחק',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -47,10 +47,10 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handleLogout = async () => {
-    Alert.alert('יציאה מהחשבון', 'האם אתה בטוח/ה בפעולה זו?', [
-      { text: 'ביטול', style: 'cancel' },
+    Alert.alert(t('settings.confirmLogoutTitle'), t('settings.confirmQuestion'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'צא/י',
+        text: language === 'en' ? 'Log out' : 'צא/י',
         style: 'destructive',
         onPress: () => supabase.auth.signOut(),
       },
@@ -61,19 +61,18 @@ export default function SettingsScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>חזרה</Text>
+          <Text style={styles.back}>{t('common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>הגדרות</Text>
+        <Text style={styles.title}>{t('settings.title')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>שינוי שפה</Text>
+        <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
         <View style={styles.langPills}>
           <TouchableOpacity
             style={[styles.langPill, language === 'he' && styles.langPillActive]}
             onPress={async () => {
-              setLanguageState('he');
               await setLanguage('he');
             }}
             activeOpacity={0.85}
@@ -83,7 +82,6 @@ export default function SettingsScreen({ navigation }) {
           <TouchableOpacity
             style={[styles.langPill, language === 'en' && styles.langPillActive]}
             onPress={async () => {
-              setLanguageState('en');
               await setLanguage('en');
             }}
             activeOpacity={0.85}
@@ -95,7 +93,7 @@ export default function SettingsScreen({ navigation }) {
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.rowTitle}>אפשרות לקבלת עדכונים</Text>
+          <Text style={styles.rowTitle}>{t('settings.updatesOptIn')}</Text>
           <Switch
             value={updatesOptIn}
             onValueChange={async (v) => {
@@ -117,7 +115,7 @@ export default function SettingsScreen({ navigation }) {
         onPress={handleLogout}
         activeOpacity={0.9}
       >
-        <Text style={styles.logoutBottomText}>התנתקות מהחשבון</Text>
+        <Text style={styles.logoutBottomText}>{t('settings.logout')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -125,9 +123,9 @@ export default function SettingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F7F8FA', paddingTop: 56, paddingHorizontal: 18 },
-  header: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
   back: { color: '#6366F1', fontWeight: '900' },
-  title: { fontSize: 18, fontWeight: '900', color: '#111827' },
+  title: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '900', color: '#111827' },
   card: {
     backgroundColor: '#FFF',
     borderRadius: 24,

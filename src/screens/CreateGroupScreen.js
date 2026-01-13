@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { supabase } from '../lib/supabase';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { scheduleChallengeReminder } from '../lib/reminders';
 
 function formatDateYYYYMMDD(date) {
   const y = date.getFullYear();
@@ -66,31 +67,77 @@ export default function CreateGroupScreen({ navigation }) {
       // We keep a safe placeholder until DB/RPC are updated.
       const goalInt = 1;
 
-      // Create everything atomically via RPC (avoids RLS edge-cases across multiple inserts)
-      const { data: groupId, error } = await supabase.rpc('create_group_with_challenge', {
-        // Group exists implicitly per challenge in the product; we use the challenge name as group name.
+      // Prefer v2 RPC that persists validity dates atomically.
+      // Fallback to legacy RPC if v2 isn't deployed yet.
+      let groupId = null;
+      let usedV2 = false;
+      let rpcError = null;
+      const v2 = await supabase.rpc('create_group_with_challenge_v2', {
         p_group_name: challengeName.trim(),
         p_group_icon: null,
         p_challenge_name: challengeName.trim(),
         p_goal: goalInt,
         p_type: type,
         p_frequency: frequency,
+        p_start_date: formatDateYYYYMMDD(startDate),
+        p_end_date: formatDateYYYYMMDD(endDate),
+        p_reminder_enabled: reminderEnabled,
+        p_description: description.trim() ? description.trim() : null,
       });
+      if (v2?.error) {
+        console.log('create_group_with_challenge_v2 RPC error:', v2.error);
+        rpcError = v2.error;
+        // If v2 function missing in schema cache, fallback to v1.
+        const msg = String(v2.error?.message || '').toLowerCase();
+        const isMissingFn = msg.includes('could not find the function') || msg.includes('schema cache');
+        if (isMissingFn) {
+          const v1 = await supabase.rpc('create_group_with_challenge', {
+            p_group_name: challengeName.trim(),
+            p_group_icon: null,
+            p_challenge_name: challengeName.trim(),
+            p_goal: goalInt,
+            p_type: type,
+            p_frequency: frequency,
+          });
+          groupId = v1?.data ?? null;
+          rpcError = v1?.error ?? null;
+        }
+      } else {
+        groupId = v2?.data ?? null;
+        usedV2 = true;
+      }
 
-      if (error) throw error;
+      if (rpcError) throw rpcError;
       if (!groupId) throw new Error('לא הצלחנו ליצור אתגר');
 
-      // Best-effort: update optional/extended challenge fields (columns must exist in DB)
-      try {
-        const { data: createdChallenge, error: chErr } = await supabase
+      // Persist validity dates in DB (legacy path when v2 isn't deployed).
+      // IMPORTANT: If v2 succeeded, do NOT do a second UPDATE (can be blocked by RLS and show a false error).
+      if (!usedV2) try {
+        // Some DB RPCs return group_id, others may return challenge_id.
+        // We resolve the created challenge id robustly so dates always persist.
+        let createdChallengeId = null;
+
+        const { data: byGroup, error: chErr } = await supabase
           .from('challenges')
           .select('id')
           .eq('group_id', groupId)
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
-        if (!chErr && createdChallenge?.id) {
-          await supabase
+
+        if (!chErr && byGroup?.id) {
+          createdChallengeId = byGroup.id;
+        } else {
+          const { data: byId, error: byIdErr } = await supabase
+            .from('challenges')
+            .select('id')
+            .eq('id', groupId)
+            .maybeSingle();
+          if (!byIdErr && byId?.id) createdChallengeId = byId.id;
+        }
+
+        if (createdChallengeId) {
+          const { data: updatedRows, error: updateErr } = await supabase
             .from('challenges')
             .update({
               start_date: formatDateYYYYMMDD(startDate),
@@ -98,10 +145,65 @@ export default function CreateGroupScreen({ navigation }) {
               reminder_enabled: reminderEnabled,
               description: description.trim() ? description.trim() : null,
             })
-            .eq('id', createdChallenge.id);
+            .eq('id', createdChallengeId)
+            // If RLS blocks UPDATE, PostgREST often returns 0 rows with no error.
+            // Selecting forces an explicit success signal.
+            .select('id, start_date, end_date');
+          if (updateErr) throw updateErr;
+          if (!Array.isArray(updatedRows) || updatedRows.length === 0) {
+            throw new Error('rls-blocked-challenges-update');
+          }
+
+          // Schedule reminders (local push). Proof: weekly = weekday of activation @ 20:00, daily = 20:00.
+          if (reminderEnabled) {
+            try {
+              await scheduleChallengeReminder({
+                challengeId: createdChallengeId,
+                challengeName: challengeName.trim(),
+                frequency,
+              });
+            } catch (e) {
+              console.log('schedule reminder failed:', e?.message ?? e);
+            }
+          }
+        } else {
+          throw new Error('could-not-resolve-created-challenge-id');
         }
       } catch (e) {
         console.log('challenge post-update failed:', e?.message ?? e);
+        if (String(e?.message || '') === 'rls-blocked-challenges-update') {
+          Alert.alert(
+            'הרשאות (RLS)',
+            'האתגר נוצר, אבל אין לאפליקציה הרשאה לעדכן את טבלת challenges (ולכן end_date לא נשמר).\n\nפתרון מומלץ (קבוע):\n1) להריץ ב-Supabase את supabase/create_group_with_challenge_v2.sql\n2) Settings → API → Reload schema\n\nפתרון מהיר (פחות מאובטח): להריץ supabase/challenges_update_policy_mvp.sql'
+          );
+          return;
+        }
+        Alert.alert(
+          'שימו לב',
+          'האתגר נוצר, אבל תאריך הסיום לא נשמר ב-DB.\n\nכדי שזה יישמר תמיד: הרץ/י ב-Supabase את supabase/create_group_with_challenge_v2.sql ואז Reload schema.'
+        );
+      }
+
+      // If v2 succeeded, we only need challenge id for scheduling reminders.
+      if (usedV2 && reminderEnabled) {
+        try {
+          const { data: createdChallenge, error: chErr } = await supabase
+            .from('challenges')
+            .select('id')
+            .eq('group_id', groupId)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (!chErr && createdChallenge?.id) {
+            await scheduleChallengeReminder({
+              challengeId: createdChallenge.id,
+              challengeName: challengeName.trim(),
+              frequency,
+            });
+          }
+        } catch (e) {
+          console.log('schedule reminder failed:', e?.message ?? e);
+        }
       }
 
       Alert.alert('הצלחה!', 'האתגר נוצר בהצלחה');
@@ -115,10 +217,10 @@ export default function CreateGroupScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>אתגר חדש</Text>
+      <Text style={styles.title}>צור אתגר חדש</Text>
       
       <View style={styles.section}>
-        <Text style={styles.label}>שם האתגר 🎯</Text>
+        <Text style={styles.label}>שם האתגר</Text>
         <TextInput
           style={styles.input}
           placeholder="למשל: ריצה"
@@ -150,8 +252,8 @@ export default function CreateGroupScreen({ navigation }) {
           }}
           activeOpacity={0.85}
         >
-          <Text style={styles.dateText}>{formatDateYYYYMMDD(startDate)}</Text>
           <Text style={styles.dateMeta}>תאריך התחלה</Text>
+          <Text style={styles.dateText}>{formatDateYYYYMMDD(startDate)}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -162,8 +264,8 @@ export default function CreateGroupScreen({ navigation }) {
           }}
           activeOpacity={0.85}
         >
-          <Text style={styles.dateText}>{formatDateYYYYMMDD(endDate)}</Text>
           <Text style={styles.dateMeta}>תאריך סיום</Text>
+          <Text style={styles.dateText}>{formatDateYYYYMMDD(endDate)}</Text>
         </TouchableOpacity>
 
         {startDate.getTime() > endDate.getTime() ? (
@@ -196,7 +298,7 @@ export default function CreateGroupScreen({ navigation }) {
             style={[styles.chip, type === 'binary' && styles.activeChip]}
             onPress={() => setType('binary')}
           >
-            <Text style={[styles.chipText, type === 'binary' && styles.activeChipText]}>כן / לא</Text>
+            <Text style={[styles.chipText, type === 'binary' && styles.activeChipText]}>בוצע / לא בוצע</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.chip, type === 'numeric' && styles.activeChip]}
@@ -210,9 +312,10 @@ export default function CreateGroupScreen({ navigation }) {
       <View style={styles.section}>
         <View style={styles.switchRow}>
           <Switch value={reminderEnabled} onValueChange={setReminderEnabled} />
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <Text style={styles.label}>תזכורת</Text>
-            <Text style={styles.helper}>{frequency === 'daily' ? 'כל יום בערב' : 'שבת בערב'}</Text>
+          <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 12 }}>
+            <Text style={styles.label}>האם תרצה לקבל תזכורות?
+            </Text>
+            
           </View>
         </View>
       </View>
@@ -293,14 +396,16 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'right',
-    marginBottom: 30,
+    marginBottom: 20,
+    marginTop: 10,
     color: '#1A1C1E',
   },
   section: {
     marginBottom: 25,
+    
   },
   label: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     textAlign: 'right',
     marginBottom: 10,

@@ -14,8 +14,10 @@ import {
 import { Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { takePendingAvatar, uploadAvatarToSupabase } from '../lib/avatar';
+import { useI18n } from '../i18n/I18nProvider';
 
 export default function LoginScreen({ navigation }) {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +33,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!canSubmit) {
-      Alert.alert('שגיאה', 'אנא מלא/י אימייל וסיסמה.');
+      Alert.alert(t('common.error'), t('auth.email') + ' / ' + t('auth.password'));
       return;
     }
     setLoading(true);
@@ -70,10 +72,10 @@ export default function LoginScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <Text style={styles.logo}>🎯 Todo</Text>
-        <Text style={styles.subtitle}>מתחייבים. מתמידים. מנצחים.</Text>
+        <Text style={styles.subtitle}>{t('auth.tagline')}</Text>
 
         <View style={styles.form}>
-          <Text style={styles.label}>אימייל</Text>
+          <Text style={styles.label}>{t('auth.email')}</Text>
           <TextInput
             style={styles.input}
             placeholder="name@email.com"
@@ -85,7 +87,7 @@ export default function LoginScreen({ navigation }) {
             onSubmitEditing={() => passwordRef.current?.focus?.()}
           />
 
-          <Text style={styles.label}>סיסמה</Text>
+          <Text style={styles.label}>{t('auth.password')}</Text>
           <View style={styles.inputRow}>
             <TextInput
               ref={passwordRef}
@@ -119,7 +121,7 @@ export default function LoginScreen({ navigation }) {
             {loading ? (
               <ActivityIndicator color="#FFF" animating={true} />
             ) : (
-              <Text style={styles.buttonText}>התחברות</Text>
+              <Text style={styles.buttonText}>{t('auth.signIn')}</Text>
             )}
           </TouchableOpacity>
 
@@ -127,7 +129,7 @@ export default function LoginScreen({ navigation }) {
             onPress={() => navigation.navigate('Register')}
             disabled={loading}
           >
-            <Text style={styles.switchText}>אין לך חשבון? הירשם עכשיו</Text>
+            <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
