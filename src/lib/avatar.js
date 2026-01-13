@@ -1,11 +1,42 @@
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
+// Expo SDK 54: use legacy FileSystem API for readAsStringAsync
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Linking from 'expo-linking';
+
+function base64ToUint8Array(base64) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const clean = String(base64 || '').replace(/[^A-Za-z0-9+/=]/g, '');
+  if (!clean) return new Uint8Array(0);
+  const padding = clean.endsWith('==') ? 2 : clean.endsWith('=') ? 1 : 0;
+  const bytesLen = Math.floor((clean.length * 3) / 4) - padding;
+  const bytes = new Uint8Array(bytesLen);
+  let p = 0;
+  for (let i = 0; i < clean.length; i += 4) {
+    const e1 = chars.indexOf(clean[i]);
+    const e2 = chars.indexOf(clean[i + 1]);
+    const e3 = clean[i + 2] === '=' ? 64 : chars.indexOf(clean[i + 2]);
+    const e4 = clean[i + 3] === '=' ? 64 : chars.indexOf(clean[i + 3]);
+    const n = (e1 << 18) | (e2 << 12) | ((e3 & 63) << 6) | (e4 & 63);
+    if (p < bytesLen) bytes[p++] = (n >> 16) & 255;
+    if (p < bytesLen && e3 !== 64) bytes[p++] = (n >> 8) & 255;
+    if (p < bytesLen && e4 !== 64) bytes[p++] = n & 255;
+  }
+  return bytes;
+}
 
 export async function pickAvatarImage() {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    throw new Error('נדרשת הרשאה לגלריה כדי לבחור תמונה');
+  // iOS can return 'limited' when the user grants access to selected photos.
+  if (status !== 'granted' && status !== 'limited') {
+    try {
+      // Best-effort: open app settings so the user can enable Photos permission
+      await Linking.openSettings();
+    } catch (_e) {
+      // ignore
+    }
+    throw new Error('אין הרשאה לגלריה. אפשר לאשר בהגדרות ואז לנסות שוב.');
   }
 
   const res = await ImagePicker.launchImageLibraryAsync({
@@ -42,12 +73,14 @@ export async function uploadAvatarToSupabase({ userId, uri }) {
   // NOTE: requires a Storage bucket named 'avatars' + policies for authenticated uploads.
   const path = `${userId}/avatar.jpg`;
 
-  const resp = await fetch(uri);
-  const blob = await resp.blob();
+  // Read bytes reliably (fetch(uri) can produce 0-byte uploads on some devices)
+  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+  const bytes = base64ToUint8Array(base64);
+  if (!bytes || bytes.length === 0) throw new Error('avatar-image-is-empty');
 
   const { error: uploadError } = await supabase.storage
     .from('avatars')
-    .upload(path, blob, { upsert: true, contentType: blob.type || 'image/jpeg' });
+    .upload(path, bytes, { upsert: true, contentType: 'image/jpeg' });
 
   if (uploadError) throw uploadError;
 

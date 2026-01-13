@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Alert, Modal, Image, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Alert, Modal, Image, ScrollView, Animated, PanResponder } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { ChevronLeft, Flame, Trophy, Calendar, CheckCircle2, User as UserIcon, X } from 'lucide-react-native';
@@ -35,6 +35,46 @@ export default function GroupDetailScreen({ route, navigation }) {
   const [proofTriedResolve, setProofTriedResolve] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const isFocused = useIsFocused();
+
+  // Swipe-down-to-close for the user modal (attach to header to avoid scroll conflicts)
+  const userModalTranslateY = useRef(new Animated.Value(0)).current;
+  const userModalScrollY = useRef(0);
+  const userModalPan = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_evt, g) => {
+          // Only allow pull-to-dismiss when the inner scroll is at top (prevents fighting with scrolling)
+          if (userModalScrollY.current > 0) return false;
+          return g.dy > 6 && Math.abs(g.dy) > Math.abs(g.dx);
+        },
+        onMoveShouldSetPanResponderCapture: (_evt, g) => {
+          if (userModalScrollY.current > 0) return false;
+          return g.dy > 6 && Math.abs(g.dy) > Math.abs(g.dx);
+        },
+        onPanResponderMove: (_evt, g) => userModalTranslateY.setValue(Math.max(0, g.dy)),
+        onPanResponderRelease: (_evt, g) => {
+          const dy = Math.max(0, g.dy);
+          const shouldClose = dy > 120 || g.vy > 1.1;
+          if (shouldClose) {
+            Animated.timing(userModalTranslateY, { toValue: 1000, duration: 180, useNativeDriver: true }).start(() => {
+              setSelectedUser(null);
+              // Don't reset translateY here — it can cause a visible "jump back" before the modal unmounts.
+              // We'll reset on next open.
+            });
+          } else {
+            Animated.spring(userModalTranslateY, { toValue: 0, useNativeDriver: true }).start();
+          }
+        },
+      }),
+    [setSelectedUser, userModalTranslateY]
+  );
+
+  useEffect(() => {
+    // Reset swipe state when opening the modal again
+    if (selectedUser) {
+      userModalTranslateY.setValue(0);
+    }
+  }, [selectedUser, userModalTranslateY]);
 
   const handleLeaveChallenge = async () => {
     Alert.alert(
@@ -225,7 +265,7 @@ export default function GroupDetailScreen({ route, navigation }) {
       </View>
       <View style={styles.memberInfo}>
         <Text style={styles.memberName}>{item.name}</Text>
-        <Text style={styles.memberStats}>🔥 {item.streak} ימים ברצף</Text>
+        
       </View>
       <View style={styles.pointsContainer}>
         <Text style={styles.pointsText}>{item.points}</Text>
@@ -319,12 +359,15 @@ export default function GroupDetailScreen({ route, navigation }) {
       <Modal
         visible={!!selectedUser}
         transparent
-        animationType="slide"
-        onRequestClose={() => setSelectedUser(null)}
+        animationType="none"
+        onRequestClose={() => {
+          setSelectedUser(null);
+        }}
       >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalContent}>
+          <Animated.View style={[styles.modalContent, { transform: [{ translateY: userModalTranslateY }] }]} {...userModalPan.panHandlers}>
             <View style={styles.modalHeader}>
+              <View style={styles.dragHandle} />
               <TouchableOpacity onPress={() => setSelectedUser(null)}>
                 <Text style={styles.modalClose}>סגור</Text>
               </TouchableOpacity>
@@ -333,7 +376,13 @@ export default function GroupDetailScreen({ route, navigation }) {
             </View>
 
             {selectedUser && (
-              <ScrollView contentContainerStyle={styles.modalScroll}>
+              <ScrollView
+                contentContainerStyle={styles.modalScroll}
+                onScroll={(e) => {
+                  userModalScrollY.current = e?.nativeEvent?.contentOffset?.y ?? 0;
+                }}
+                scrollEventThrottle={16}
+              >
                 <View style={styles.userProfileHeader}>
                   <View style={styles.userAvatarLarge}>
                     {selectedUser.avatar_url ? (
@@ -419,7 +468,7 @@ export default function GroupDetailScreen({ route, navigation }) {
                 )}
               </ScrollView>
             )}
-          </View>
+          </Animated.View>
         </View>
 
         {/* Fullscreen proof image (overlay inside the same modal for reliability) */}
@@ -744,6 +793,17 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F3F5',
+  },
+  dragHandle: {
+    position: 'absolute',
+    top: 8,
+    left: '50%',
+    marginLeft: -18,
+    width: 36,
+    height: 4,
+    borderRadius: 999,
+    backgroundColor: '#E5E7EB',
+    opacity: 0.9,
   },
   modalClose: {
     color: '#6366F1',

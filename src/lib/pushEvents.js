@@ -25,17 +25,23 @@ export async function ensureExpoPushTokenSaved() {
     }
 
     const projectId = await getProjectId();
-    const tokenResp = await Notifications.getExpoPushTokenAsync(
-      projectId ? { projectId } : undefined
-    );
+    let tokenResp = null;
+    try {
+      tokenResp = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
+    } catch (e) {
+      console.log('getExpoPushTokenAsync failed (missing projectId?):', e?.message ?? e);
+      // Retry without args (helps some Expo Go/dev flows)
+      tokenResp = await Notifications.getExpoPushTokenAsync();
+    }
     const token = tokenResp?.data ?? null;
     if (!token) return null;
 
     // Persist token on user (RLS: users_update_self policy should allow this)
-    await supabase
+    const { error: upErr } = await supabase
       .from('users')
       .update({ expo_push_token: token })
       .eq('id', userId);
+    if (upErr) console.log('saving expo_push_token failed:', upErr);
 
     return token;
   } catch (_e) {

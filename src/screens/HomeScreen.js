@@ -101,6 +101,21 @@ export default function HomeScreen({ navigation }) {
   const [orderIds, setOrderIds] = useState([]);
   const [myRankByGroupId, setMyRankByGroupId] = useState({});
 
+  const groupIconSource = (icon) => {
+    switch (String(icon || '').trim()) {
+      case 'run':
+        return require('../../assets/images/run.png');
+      case 'book':
+        return require('../../assets/images/book.png');
+      case 'water':
+        return require('../../assets/images/water.png');
+      case 'sleep':
+        return require('../../assets/images/sleep.png');
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     if (isFocused) {
       fetchGroups();
@@ -296,7 +311,11 @@ export default function HomeScreen({ navigation }) {
       }}
     >
       <View style={styles.cardHeader}>
-        <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
+        {groupIconSource(item.icon) ? (
+          <Image source={groupIconSource(item.icon)} style={styles.groupIconImage} />
+        ) : (
+          <Text style={styles.groupIconEmoji}>{item.icon || '🏃‍♂️'}</Text>
+        )}
         <View style={styles.groupInfo}>
           <View style={styles.nameRow}>
             {editMode ? (
@@ -345,7 +364,11 @@ export default function HomeScreen({ navigation }) {
         onPress={() => toggleSelect(item.id)}
       >
         <View style={styles.cardHeader}>
-          <Text style={styles.groupIcon}>{item.icon || '🏃‍♂️'}</Text>
+          {groupIconSource(item.icon) ? (
+            <Image source={groupIconSource(item.icon)} style={styles.groupIconImage} />
+          ) : (
+            <Text style={styles.groupIconEmoji}>{item.icon || '🏃‍♂️'}</Text>
+          )}
           <View style={styles.groupInfo}>
             <View style={styles.nameRow}>
               <View style={[styles.checkbox, selectedIds.has(item.id) && styles.checkboxOn]}>
@@ -384,7 +407,7 @@ export default function HomeScreen({ navigation }) {
           activeOpacity={0.85}
         >
           {editMode ? (
-            <Text style={styles.editTopIcon}>✅</Text>
+            <Image source={require('../../assets/images/v.png')} style={styles.editTopImg} />
           ) : (
             <Image source={require('../../assets/images/edit.png')} style={styles.editTopImg} />
           )}
@@ -557,9 +580,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: -1,
   },
-  groupIcon: {
+  groupIconEmoji: {
     fontSize: 40,
     marginLeft: 15,
+  },
+  groupIconImage: {
+    width: 44,
+    height: 44,
+    marginLeft: 15,
+    resizeMode: 'contain',
   },
   groupInfo: {
     flex: 1,

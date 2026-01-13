@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Image,
   StyleSheet,
   Alert,
   ScrollView,
@@ -14,6 +15,13 @@ import {
 import { supabase } from '../lib/supabase';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { scheduleChallengeReminder } from '../lib/reminders';
+
+const ICON_OPTIONS = [
+  { key: 'run', source: require('../../assets/images/run.png') },
+  { key: 'book', source: require('../../assets/images/book.png') },
+  { key: 'water', source: require('../../assets/images/water.png') },
+  { key: 'sleep', source: require('../../assets/images/sleep.png') },
+];
 
 function formatDateYYYYMMDD(date) {
   const y = date.getFullYear();
@@ -28,6 +36,7 @@ export default function CreateGroupScreen({ navigation }) {
   const [type, setType] = useState('binary'); // 'binary' or 'numeric'
   const [frequency, setFrequency] = useState('weekly'); // 'daily' or 'weekly'
   const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [groupIcon, setGroupIcon] = useState('run'); // stored in public.groups.icon
 
   const [startDate, setStartDate] = useState(() => new Date());
   const [endDate, setEndDate] = useState(() => {
@@ -74,7 +83,7 @@ export default function CreateGroupScreen({ navigation }) {
       let rpcError = null;
       const v2 = await supabase.rpc('create_group_with_challenge_v2', {
         p_group_name: challengeName.trim(),
-        p_group_icon: null,
+        p_group_icon: groupIcon,
         p_challenge_name: challengeName.trim(),
         p_goal: goalInt,
         p_type: type,
@@ -93,7 +102,7 @@ export default function CreateGroupScreen({ navigation }) {
         if (isMissingFn) {
           const v1 = await supabase.rpc('create_group_with_challenge', {
             p_group_name: challengeName.trim(),
-            p_group_icon: null,
+            p_group_icon: groupIcon,
             p_challenge_name: challengeName.trim(),
             p_goal: goalInt,
             p_type: type,
@@ -227,6 +236,25 @@ export default function CreateGroupScreen({ navigation }) {
           value={challengeName}
           onChangeText={setChallengeName}
         />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.label}>אייקון האתגר</Text>
+        <View style={styles.iconRow}>
+          {ICON_OPTIONS.map((opt) => {
+            const selected = opt.key === groupIcon;
+            return (
+              <TouchableOpacity
+                key={opt.key}
+                style={[styles.iconChoice, selected && styles.iconChoiceSelected]}
+                onPress={() => setGroupIcon(opt.key)}
+                activeOpacity={0.85}
+              >
+                <Image source={opt.source} style={styles.iconImage} />
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -446,6 +474,30 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row-reverse',
     gap: 10,
+  },
+  iconRow: {
+    flexDirection: 'row-reverse',
+    gap: 12,
+  },
+  iconChoice: {
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#E9ECEF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconChoiceSelected: {
+    borderColor: '#6366F1',
+    borderWidth: 2,
+    backgroundColor: '#EEF2FF',
+  },
+  iconImage: {
+    width: 32,
+    height: 32,
+    resizeMode: 'contain',
   },
   chip: {
     paddingVertical: 10,
