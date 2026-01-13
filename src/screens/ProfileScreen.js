@@ -1,15 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage, uploadAvatarToSupabase } from '../lib/avatar';
 import { useIsFocused } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import { ChevronLeft } from 'lucide-react-native';
+import { getLanguage, getUpdatesOptIn } from '../lib/localSettings';
 
-export default function ProfileScreen() {
+const PRIVACY_POLICY_URL = 'https://to-do-b5e7d755.base44.app/';
+
+export default function ProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [userRow, setUserRow] = useState(null);
-  const [email, setEmail] = useState(null);
   const [savingAvatar, setSavingAvatar] = useState(false);
   const isFocused = useIsFocused();
+  const [_language, setLanguageState] = useState('he'); // loaded for consistency
+  const [_updatesOptIn, setUpdatesOptInState] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -17,6 +32,12 @@ export default function ProfileScreen() {
     const load = async () => {
       try {
         setLoading(true);
+        const [lang, updates] = await Promise.all([getLanguage(), getUpdatesOptIn()]);
+        if (mounted) {
+          setLanguageState(lang);
+          setUpdatesOptInState(updates);
+        }
+
         const { data: authData } = await supabase.auth.getUser();
         const user = authData?.user ?? null;
         if (!user) return;
@@ -33,10 +54,8 @@ export default function ProfileScreen() {
         const combinedRow = {
           ...row,
           display_name: row?.display_name || user.user_metadata?.display_name || user.user_metadata?.full_name || 'משתמש',
-          email: user.email || row?.email
         };
 
-        setEmail(combinedRow.email);
         setUserRow(combinedRow);
       } finally {
         if (mounted) setLoading(false);
@@ -50,6 +69,14 @@ export default function ProfileScreen() {
   }, [isFocused]);
 
   const displayName = useMemo(() => userRow?.display_name || 'משתמש', [userRow]);
+
+  const handleOpenPrivacy = async () => {
+    try {
+      await Linking.openURL(PRIVACY_POLICY_URL);
+    } catch (_e) {
+      Alert.alert('שגיאה', 'לא הצלחנו לפתוח את מדיניות הפרטיות');
+    }
+  };
 
   const handleChangeAvatar = async () => {
     try {
@@ -77,6 +104,8 @@ export default function ProfileScreen() {
     }
   };
 
+  // Settings actions moved to SettingsScreen
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -90,89 +119,96 @@ export default function ProfileScreen() {
       <Text style={styles.title}>הפרופיל שלי</Text>
 
       <View style={styles.card}>
-        <View style={styles.topRow}>
-          <TouchableOpacity style={styles.avatarPressable} onPress={handleChangeAvatar} disabled={savingAvatar}>
-            {userRow?.avatar_url ? (
-              <Image source={{ uri: userRow.avatar_url }} style={styles.avatar} />
-            ) : (
-              <View style={styles.avatarPlaceholder}>
-                <Text style={styles.avatarPlaceholderText}>👤</Text>
-              </View>
-            )}
-            <View style={styles.avatarBadge}>
-              {savingAvatar ? (
-                <ActivityIndicator color="#FFF" animating={true} />
-              ) : (
-                <Text style={styles.avatarBadgeText}>✎</Text>
-              )}
+        <Text style={styles.nameCentered}>{displayName}</Text>
+        <TouchableOpacity
+          style={styles.avatarPressableCentered}
+          onPress={handleChangeAvatar}
+          disabled={savingAvatar}
+          activeOpacity={0.85}
+        >
+          {userRow?.avatar_url ? (
+            <Image source={{ uri: userRow.avatar_url }} style={styles.avatarCentered} />
+          ) : (
+            <View style={styles.avatarPlaceholderCentered}>
+              <Text style={styles.avatarPlaceholderText}>👤</Text>
             </View>
-          </TouchableOpacity>
-
-          <View style={styles.identity}>
-            <Text style={styles.name}>{displayName}</Text>
-            <Text style={styles.email}>{email || ''}</Text>
+          )}
+          <View style={styles.avatarBadgeCentered}>
+            {savingAvatar ? (
+              <ActivityIndicator color="#FFF" animating={true} />
+            ) : (
+              <Text style={styles.avatarBadgeText}>✎</Text>
+            )}
           </View>
+        </TouchableOpacity>
+
+
+        <Text style={styles.note}>טיפ: תמונת פרופיל עוזרת לחברים לזהות אותך .</Text>
+        <View style={styles.listCard}>
+          <TouchableOpacity
+            style={styles.rowPress}
+            onPress={() => navigation.navigate('PersonalDetails')}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.rowTitle}>פרטים אישיים</Text>
+            <View style={{ flex: 1 }} />
+            <ChevronLeft size={18} color="#6C757D" />
+          </TouchableOpacity>
+          <View style={styles.divider} />
+          <TouchableOpacity style={styles.rowPress} onPress={handleOpenPrivacy} activeOpacity={0.85}>
+            <Text style={styles.rowTitle}>מדיניות פרטיות</Text>
+            <View style={{ flex: 1 }} />
+            <ChevronLeft size={18} color="#6C757D" />
+          </TouchableOpacity>
+          <View style={styles.divider} />
+          <TouchableOpacity style={styles.rowPress} onPress={() => navigation.navigate('Settings')} activeOpacity={0.85}>
+            <Text style={styles.rowTitle}>הגדרות</Text>
+            <View style={{ flex: 1 }} />
+            <ChevronLeft size={18} color="#6C757D" />
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.statsRow}>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{userRow?.total_points ?? 0}</Text>
-            <Text style={styles.statLabel}>XP</Text>
-          </View>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{userRow?.birthdate ?? '—'}</Text>
-            <Text style={styles.statLabel}>תאריך לידה</Text>
-          </View>
-        </View>
-
-        <View style={styles.actionsRow}>
-          <TouchableOpacity style={styles.secondaryButton} onPress={handleChangeAvatar} disabled={savingAvatar}>
-            <Text style={styles.secondaryText}>שנה תמונה</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={() => supabase.auth.signOut()}>
-            <Text style={styles.logoutText}>התנתק</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.note}>
-          טיפ: כדאי להעלות תמונה כדי שחברי הקבוצה יזהו אותך מהר.
-        </Text>
+        
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F7FA' },
-  container: { flex: 1, backgroundColor: '#F5F7FA' },
-  content: { paddingTop: 60, paddingHorizontal: 20, paddingBottom: 100 },
-  title: { fontSize: 28, fontWeight: 'bold', textAlign: 'right', color: '#1A1C1E', marginBottom: 16 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F7F8FA' },
+  container: { flex: 1, backgroundColor: '#F7F8FA' },
+  content: { paddingTop: 56, paddingHorizontal: 18, paddingBottom: 120 },
+  title: { fontSize: 22, fontWeight: '900', textAlign: 'center', color: '#111827', marginBottom: 14 },
   card: {
     backgroundColor: '#FFF',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1,
-    borderColor: '#F1F3F5',
+    borderColor: '#EEF2F7',
+    shadowColor: '#111827',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.06,
+    shadowRadius: 18,
+    elevation: 3,
   },
-  topRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
-  identity: { flex: 1, alignItems: 'flex-end', marginRight: 14 },
-  avatarPressable: { width: 96, height: 96, borderRadius: 48 },
-  avatar: { width: 96, height: 96, borderRadius: 48 },
-  avatarPlaceholder: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: '#F8F9FA',
+  nameCentered: { fontSize: 20, fontWeight: '900', textAlign: 'center', color: '#111827' },
+  avatarPressableCentered: { alignSelf: 'center', marginTop: 14, width: 104, height: 104, borderRadius: 52 },
+  avatarCentered: { width: 104, height: 104, borderRadius: 52 },
+  avatarPlaceholderCentered: {
+    width: 104,
+    height: 104,
+    borderRadius: 52,
+    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E9ECEF',
+    borderColor: '#E5E7EB',
   },
-  avatarPlaceholderText: { fontSize: 36 },
-  avatarBadge: {
+  avatarPlaceholderText: { fontSize: 34 },
+  avatarBadgeCentered: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 4,
+    right: 4,
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -183,34 +219,28 @@ const styles = StyleSheet.create({
     borderColor: '#FFF',
   },
   avatarBadgeText: { color: '#FFF', fontWeight: '900' },
-  name: { fontSize: 20, fontWeight: '900', textAlign: 'right', color: '#1A1C1E' },
-  email: { fontSize: 14, textAlign: 'right', color: '#6C757D', marginTop: 4 },
-  statsRow: { flexDirection: 'row-reverse', justifyContent: 'space-between', gap: 12 },
-  stat: { flex: 1, backgroundColor: '#F8F9FA', borderRadius: 14, padding: 12, borderWidth: 1, borderColor: '#E9ECEF' },
-  statValue: { fontSize: 16, fontWeight: '900', color: '#6366F1', textAlign: 'right' },
-  statLabel: { fontSize: 12, fontWeight: '700', color: '#6C757D', textAlign: 'right', marginTop: 4 },
-  actionsRow: { flexDirection: 'row-reverse', gap: 10, marginTop: 16 },
-  secondaryButton: {
-    flex: 1,
+  avatarHint: { marginTop: 10, color: '#6B7280', fontWeight: '700', textAlign: 'center', fontSize: 12 },
+  xpPill: {
+    marginTop: 14,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     backgroundColor: '#EEF2FF',
     borderWidth: 1,
     borderColor: '#E0E7FF',
-    padding: 12,
-    borderRadius: 14,
-    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 999,
   },
-  secondaryText: { color: '#4F46E5', fontWeight: '900' },
-  logoutButton: {
-    flex: 1,
-    backgroundColor: '#FFF5F5',
-    borderWidth: 1,
-    borderColor: '#FFD6D6',
-    padding: 12,
-    borderRadius: 14,
-    alignItems: 'center',
-  },
-  logoutText: { color: '#FF5252', fontWeight: '900' },
-  note: { marginTop: 14, color: '#6C757D', fontWeight: '600', textAlign: 'right' },
+ 
+  sectionTitle: { marginTop: 18, marginBottom: 10, fontWeight: '900', color: '#111827', textAlign: 'right' },
+  listCard: { backgroundColor: '#FFF', borderRadius: 18, borderWidth: 1, borderColor: '#EEF2F7', overflow: 'hidden' },
+  rowPress: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, paddingHorizontal: 14 },
+  rowTitle: { fontWeight: '800', color: '#111827', textAlign: 'right' },
+  divider: { height: 1, backgroundColor: '#EEF2F7' },
+  // settings styles moved to SettingsScreen
+  note: { marginTop: 14,marginBottom: 14, color: '#6B7280', fontWeight: '600', textAlign: 'center' },
 });
 
 
