@@ -13,7 +13,6 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import { Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage, savePendingAvatar, uploadAvatarToSupabase } from '../lib/avatar';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -37,6 +36,7 @@ export default function RegisterScreen({ navigation }) {
   const { t } = useI18n();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [hideEmailFromOthers, setHideEmailFromOthers] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [birthdateDate, setBirthdateDate] = useState(null); // Date
@@ -86,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
         password,
         options: {
           // Trigger will copy this into public.users.*
-          data: { birthdate, display_name: fullName.trim() },
+          data: { birthdate, display_name: fullName.trim(), hide_email: Boolean(hideEmailFromOthers) },
         },
       });
       if (error) throw error;
@@ -189,6 +189,22 @@ export default function RegisterScreen({ navigation }) {
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus?.()}
         />
+
+        <TouchableOpacity
+          style={styles.privacyRow}
+          onPress={() => setHideEmailFromOthers((v) => !v)}
+          activeOpacity={0.85}
+          accessibilityRole="switch"
+          accessibilityState={{ checked: hideEmailFromOthers }}
+        >
+          <View style={[styles.checkbox, hideEmailFromOthers && styles.checkboxOn]}>
+            {hideEmailFromOthers ? <Text style={styles.checkboxMark}>✓</Text> : null}
+          </View>
+          <Text style={styles.privacyText}>{t('auth.hideEmail')}</Text>
+        </TouchableOpacity>
+        <Text style={styles.privacyHint}>
+          {t('auth.hideEmailHint')}
+        </Text>
 
         <Text style={styles.label}>{t('auth.password')}</Text>
         <View style={styles.inputRow}>
@@ -487,6 +503,46 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     borderWidth: 1,
     borderColor: '#E9ECEF',
+  },
+  privacyRow: {
+    marginTop: 2,
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 10,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxOn: {
+    backgroundColor: '#6366F1',
+    borderColor: '#6366F1',
+  },
+  checkboxMark: {
+    color: '#FFFFFF',
+    fontWeight: '900',
+    marginTop: -1,
+  },
+  privacyText: {
+    flex: 1,
+    textAlign: 'right',
+    color: '#1A1C1E',
+    fontWeight: '800',
+  },
+  privacyHint: {
+    marginTop: -4,
+    marginBottom: 8,
+    textAlign: 'right',
+    color: '#6B7280',
+    fontWeight: '600',
+    fontSize: 12,
   },
   dateField: {
     flexDirection: 'row-reverse',

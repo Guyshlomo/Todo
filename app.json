@@ -4,25 +4,28 @@
     "slug": "Todo-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/Logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.guy.todo",
       "supportsTablet": true,
+      "buildNumber": "2",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "נדרש אישור כדי לבחור תמונת פרופיל מהגלריה.",
         "NSPhotoLibraryAddUsageDescription": "נדרש אישור כדי לשמור תמונת פרופיל.",
-        "NSCameraUsageDescription": "נדרש אישור כדי לצלם תמונת פרופיל."
+        "NSCameraUsageDescription": "נדרש אישור כדי לצלם תמונת פרופיל.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/Logo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -32,6 +35,11 @@
     },
     "plugins": [
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd"
+      }
+    }
   }
 }

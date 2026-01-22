@@ -223,16 +223,7 @@ export default function ReportScreen({ route, navigation }) {
         return;
       }
 
-      const message =
-        totalXpAfter === null
-          ? (pointsEarned > 0 ? `הדיווח נשמר +${pointsEarned} XP` : 'הדיווח נשמר')
-          : didIncrease
-            ? (pointsEarned > 0
-                ? `הדיווח נשמר +${pointsEarned} XP\nסה״כ: ${totalXpAfter} XP`
-                : `הדיווח נשמר\nסה״כ: ${totalXpAfter} XP`)
-            : (pointsEarned > 0
-                ? `הדיווח נשמר +${pointsEarned} XP\nאבל ה-XP לא עודכן בשרת (סה״כ: ${totalXpAfter} XP)\nבדוק/י Trigger/RLS`
-                : `הדיווח נשמר\nאבל ה-XP לא עודכן בשרת (סה״כ: ${totalXpAfter} XP)\nבדוק/י Trigger/RLS`);
+      const message = 'הדיווח נשמר';
 
       Alert.alert('איזה אלוף!', message, [{ text: 'יש!', onPress: () => navigation.goBack() }]);
     } catch (error) {

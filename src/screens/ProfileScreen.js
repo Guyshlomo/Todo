@@ -48,7 +48,7 @@ export default function ProfileScreen({ navigation }) {
 
         const { data: row } = await supabase
           .from('users')
-          .select('email, avatar_url, display_name, birthdate, total_points')
+          .select('avatar_url, display_name, birthdate, total_points')
           .eq('id', user.id)
           .single();
 
@@ -105,7 +105,7 @@ export default function ProfileScreen({ navigation }) {
       // refresh row from DB (public URL)
       const { data: row } = await supabase
         .from('users')
-        .select('avatar_url, display_name, birthdate, total_points, email')
+        .select('avatar_url, display_name, birthdate, total_points')
         .eq('id', userId)
         .single();
       if (row) setUserRow(row);

@@ -34,14 +34,14 @@ export default function PersonalDetailsScreen({ navigation }) {
 
         const { data } = await supabase
           .from('users')
-          .select('display_name, birthdate, email')
+          .select('display_name, birthdate')
           .eq('id', user.id)
           .single();
 
         if (!mounted) return;
         const resolvedDisplayName =
           data?.display_name || user.user_metadata?.display_name || user.user_metadata?.full_name || null;
-        setEmail(user.email || data?.email || '');
+        setEmail(user.email || '');
         setRow({
           ...(data ?? {}),
           display_name: resolvedDisplayName,

@@ -21,10 +21,12 @@ export const translations = {
       email: 'אימייל',
       password: 'סיסמה',
       confirmPassword: 'אימות סיסמה',
-      fullName: 'איך נקרא לך? (חובה)',
+      fullName: 'שם מלא',
       signIn: 'התחברות',
       signUp: 'צור חשבון',
       noAccount: 'אין לך חשבון? הירשם עכשיו',
+      hideEmail: 'הסתר את המייל ממשתמשים אחרים',
+      hideEmailHint: 'המייל שלך יוצג רק לך. חברים בקבוצות יראו שם ותמונה בלבד.',
     },
     profile: {
       title: 'הפרופיל שלי',
@@ -117,6 +119,8 @@ export const translations = {
       signIn: 'Log in',
       signUp: 'Create account',
       noAccount: "Don’t have an account? Sign up",
+      hideEmail: 'Hide my email from other users',
+      hideEmailHint: 'Only you will see your email. Group members will see only your name and photo.',
     },
     profile: {
       title: 'My Profile',
