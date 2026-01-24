@@ -1,13 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
 function reminderKey(challengeId) {
   return `todo:reminder:${String(challengeId || '')}`;
 }
 
+async function getNotifications() {
+  return await import('expo-notifications');
+}
+
 async function ensureAndroidChannel() {
   if (Platform.OS !== 'android') return;
+  const Notifications = await getNotifications();
   await Notifications.setNotificationChannelAsync('reminders', {
     name: 'Reminders',
     importance: Notifications.AndroidImportance.DEFAULT,
@@ -15,6 +19,7 @@ async function ensureAndroidChannel() {
 }
 
 export async function ensureNotificationPermissions() {
+  const Notifications = await getNotifications();
   await ensureAndroidChannel();
   const settings = await Notifications.getPermissionsAsync();
   if (settings.status === 'granted') return true;
@@ -23,6 +28,7 @@ export async function ensureNotificationPermissions() {
 }
 
 export async function cancelChallengeReminder(challengeId) {
+  const Notifications = await getNotifications();
   const key = reminderKey(challengeId);
   const existing = await AsyncStorage.getItem(key);
   if (existing) {
@@ -41,6 +47,7 @@ export async function cancelChallengeReminder(challengeId) {
  * - weekly: every week at 20:00 on the weekday the user enabled it (per user request)
  */
 export async function scheduleChallengeReminder({ challengeId, challengeName, frequency }) {
+  const Notifications = await getNotifications();
   if (!challengeId) return null;
   await cancelChallengeReminder(challengeId);
 

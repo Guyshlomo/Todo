@@ -8,6 +8,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '../theme/ThemeProvider';
 
 const HOME_ORDER_KEY = 'todo:home:order:v1';
+let didShowNetworkAlert = false;
 
 function uniqIds(ids) {
   const out = [];
@@ -213,7 +214,20 @@ export default function HomeScreen({ navigation }) {
       // Rank is per challenge/group (XP differs per group_id), so compute per group_id from reports.
       await computeMyRanks(fetched.map((g) => g.id).filter(Boolean));
     } catch (error) {
-      console.error('Error fetching groups:', error.message);
+      const msg = String(error?.message || error || '');
+      if (msg.toLowerCase().includes('network request failed')) {
+        if (!didShowNetworkAlert) {
+          didShowNetworkAlert = true;
+          Alert.alert(
+            language === 'en' ? 'No internet connection' : 'אין חיבור לאינטרנט',
+            language === 'en'
+              ? 'Please check your connection and try again.'
+              : 'בדוק/י את החיבור לאינטרנט ונסה/י שוב.'
+          );
+        }
+        return;
+      }
+      console.log('Error fetching groups:', msg);
     } finally {
       setLoading(false);
     }

@@ -1,19 +1,19 @@
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
-import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
 async function getProjectId() {
   // Works for EAS builds; may be undefined in some dev environments.
-  return (
-    Constants?.easConfig?.projectId ||
-    Constants?.expoConfig?.extra?.eas?.projectId ||
-    null
-  );
+  try {
+    const mod = await import('expo-constants');
+    const Constants = mod?.default ?? mod;
+    return Constants?.easConfig?.projectId || Constants?.expoConfig?.extra?.eas?.projectId || null;
+  } catch (_e) {
+    return null;
+  }
 }
 
 export async function ensureExpoPushTokenSaved() {
   try {
+    const Notifications = await import('expo-notifications');
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData?.user?.id ?? null;
     if (!userId) return null;

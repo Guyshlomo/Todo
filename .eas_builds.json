@@ -1,0 +1,514 @@
+[
+  {
+    "id": "1d67b96f-9fe2-4ee8-8fb5-348efa25a73a",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/4CAWwP7don58YKgnJ86pvU.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/1d67b96f-9fe2-4ee8-8fb5-348efa25a73a?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b999cf19366de244a4b51f675bc3e538a15004c32e76e5206390f01814a819eaaf9a398b602264a83decca61b263dccb5959edae6e7a141501075f52e8b5c85490ccf7a8f83e0082878a5d8aec36b1313067d70e2db77bfa908c953c9f21d2dcd217ebfc8a814998f1421f5b80e2088c12c25c9df7a8fc750a2e7288b71ba8d3ee493ad81e62a985056aec445799c96e020a955433a47d8dd942c6eab4cda48a23c62dff9b321d1850bfb4aa7debef48974736a4952dc3977a94b41733f9621fa9866765147c4e57d9a7e3fd918c9cf1f9330b74dc01baac6ae57c1802f37d0d2eea0ff27227879d90f01e9f1afb30c186fdbb8997c5794d077226a0737e6741",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/4CAWwP7don58YKgnJ86pvU.ipa"
+    },
+    "fingerprint": {
+      "id": "019bf026-2e3a-7352-a845-65759893100c",
+      "hash": "78435058c216df3b9b9f03abb1fb78b452f7f3d1"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/1d67b96f-9fe2-4ee8-8fb5-348efa25a73a/1769260592922-8fe324cf-6ae2-4979-9808-11e1fe332173.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=4c008cc48a5c861fb3fc677827fa3f83853425b00f18cb7783a5616333e6b0e018d15757aa68185b4fe2d347bf27d6e7b3c4a2880b3705db0c711f1684d41963a84ccfb67a12ea147c9b1e5ba1852b5d1e446b8a25486984370710e04193472ca1f155d4aa0438ff12feefaf388e54e6649b7cd234535b48e0e92708fb54f014a5790891c4c2d2be1d37e8f0da610e3cca6958d9f299e080cb348b463afc18f5b06c8586a45b552e2ea907416fac8b845601c911f7f8bcfb6723547a124c3378fbbc1b539a4ff84de84713a35bee976878ff3c3469e001672858e7bf2caeae87d3b709acde20e8e41ef55f6a974192e9d4d35119437bcf2cdf3f385a2c7400b5",
+      "https://job-logs.eascdn.net/production/1d67b96f-9fe2-4ee8-8fb5-348efa25a73a/1769260595720-28861636-af11-4976-bfde-aac9bb2352ce.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=22056402d10bb51cdac6a10a6ee11cc5fbf15e693b7a7563390861c3b9768ca856f10f8cedf88f4a1ee28ca840629dc236916d674a04c1055ce226a637e4343718c57fd2570f6fe22cabaf7fc113d19f0fed6e242a4ab26da914c7935cfa240ac7ffed8272a395f92d2fcda07dc5697f7cbb6db7c73243f50ca4a33fb89a94309a31a42bb655a81f9a2d8ab71520f6580891fe52dd66c43a397937d27210c4b4e2abc9f267714c57219ed93462df87c3ed084529497685733b4d8f62833abbbfbbf72f09553e5cb522ff3d6b8865d8f672bc4e1931333257e854d55072b89ca26e66c6c4bbf44e48fcae6a526ac9b033eb961032477f0db717a17cd3520da23f",
+      "https://job-logs.eascdn.net/production/1d67b96f-9fe2-4ee8-8fb5-348efa25a73a/1769260596020-c70a3d28-2a9d-4fb4-a745-c8ec656ba9e2.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b93b851959a9623b4e43802b9e83024b2c861f13b47fe8bf7ecc00622dcf48e06757432e791892a490bb84d1ee2c386af4af8ca0bbe72f51f7b24f1519f2a43c28f5d8386a51c157433778c4005282ec7de821e2c900b49327f82c76af74d2654e959f4f38f1ac4844992bbee319d02319c051c456498ea3006209bf6a38bf33cb55ed60741f2ac0961d0ff7f49b7c9cb8ca61e3175467258ebfaef4f5bd8662efe25d47188e735868d57f4a2858e58c717912322dee951efa0c326ed1f38bac41ae391b402f2d826cfd44dc45ef8a8121b8e844bbd20cf30666e8f2643e3b919dc586c70121aa0a468d6edf2836ad1ec409aacd37e6493b7da322474400bb21",
+      "https://job-logs.eascdn.net/production/1d67b96f-9fe2-4ee8-8fb5-348efa25a73a/1769260596236-500f0dd0-d6f2-46ee-92b1-d6aeec7511e7.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b889c6b3944c96ce0765aa413f99bec293565c745d38a44cf89a15cd1dedf67ab4b71cdb3280e24612e05aba3f189aca423d3661054b92de35063fcc64154de48de066597f39bb36cdaf20e18ad55cc74befa76756a3303e53f32d133ced54070ba82137dfbdfe9cc3cbfedc557a03882ef9795272a5757779e43042f21959a810805f287446219233f2648b741ddd9c1c0856d7539c850e1b5dd704726253fce83b30eb1db61b85d5482433638996ae72e8efbab8b93cfdba1c939a9012efe76c1e4a545c64fdfa5bedc4310f1f35b40ae6530cdd17f4f677a6efbe888972d0a932edee9256ebb7397cfbf7fdd3d468289747971fd4dfbd4d39a2c35a5e243c"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "11",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T13:16:32.607Z",
+    "updatedAt": "2026-01-24T13:21:39.985Z",
+    "completedAt": "2026-01-24T13:21:32.063Z",
+    "expirationDate": "2026-02-23T13:16:32.687Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 193,
+      "buildQueueTime": 45747,
+      "buildDuration": 249260
+    }
+  },
+  {
+    "id": "0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/2umGiYUtG4Az1FGxrJgZgQ.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=4906563c6b27e1991509f3cd50c3dd0dbc230e10b08790f479557f5adb0abf17d98c6a96e0b427d495b7385a35932b842150f04b546fa70aba8ea46612490ddb1f0c187bae8f3a2a90cd7e19931e0e3b8ce1f0107f8020d784a4522ac1fad4306c56148b060e5abc0d5fa75d630bd111284f2a8b451437d8537d68b894aef844b19005ae6fc0a5024b7e834f30bbf4c8190a3e5be65ece66a15edae68b8bcd43b26d55fc84d4f39afa6508ee0e9724052aa5ec1fccff01858980e8e2a674b85f90add09718f3ae73231b44a3450ffacf78ad24441d37ebed829a105a3cf3c90f51f7db679acc30668fc080966ba59cc897af0e7f7f0a74af50b68e83a2c49e1f",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/2umGiYUtG4Az1FGxrJgZgQ.ipa"
+    },
+    "fingerprint": {
+      "id": "019bf011-ae38-757d-9834-92a457e0dee8",
+      "hash": "a7606c2ab3d00d147d09e5bbd76a010fc79c0bc3"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2/1769259249431-f27b80de-f7d1-48dd-92eb-ce37b9ef9d0e.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=59b8d817de142ec90d2c0a0768736403c1d4a7917648ed7de2c3af002fbaa3923eb8d7279e554ddcebae7d742a57936f94c1b80e84165ae2cfd3baa6e29487f186e2147ff70759d4920ac816170a8dcd3716c67decaee9f724dc616698a4a733c46f09e7c118b54ac8322fc972ee9cddb639c74b89b86efb3039985145a6d2f4b72480c094cf7933dc3c8b671a69af1724425b2b0003d95ae9119ca633fbeeed6b1a8dd8f64f1b8adde51e9804cdc5b62cb4be2c2a4f2aefe1cdb98c90601ef6cce546ccfcf26c3796116dfce1e634119b813cb569610f14b13c40d756cc24861f7a0598fa21bbb5b17eb5b377ef8e3f3fdb31c5ce7d04edd47e450b0a0e7ebc",
+      "https://job-logs.eascdn.net/production/0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2/1769259249599-2cc8eb59-56e2-49b5-ae67-1c05ef579bba.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=14d45caaabbd089e740095a903c4b7cf32fef88d8da89643689debb9bb5d445866cc76bf78009d5293e8c17e6d78f3ade359d2bf8c5f172bcff8bd8fcd31ed44fc25d7224276e04897fc4e77f70c97a65bf2bde576e74e232763151778d2cb3359a20d30b4c1943d0f88a830a0579b4a059f75692989999b52a7680ca60db6c7baa99ef5e3ccc93d86c03548209e494cf1a1618f28e38e42db2f1f019ec1dbebf1b24171aa7562a5a69de049d6cefb231fd0ce3442b7b13658146ad9a72b048a115a8461e64aa2cc6d97465e6c47c7cf8f24687bf9b55e2139a1b61047febefaf9176f0296cfc145482611e36c33be3186af188fa50904270d68c877c71b6575",
+      "https://job-logs.eascdn.net/production/0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2/1769259249857-aa8184ce-a47c-49b1-acd1-a2dd98bf761c.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=03f17883ecbcb655206e2da3ed94b54c7bb42cf4cc459487a6ef1333ba2e917873e29dffdbfbbdb3e83ce8adc2fe1ae5248f108f6e17b8cf7530001ca6dfd333df97f7ed76c54c4e991a22c4823e3aed8ebb55e1808fa0caa4102edf27603c2026b075cfabd3a98fab94c22b78bdd52b17b0fcb3371ccd5af038a306338df7a061cd7603c8aa98c68c48fa065b0c0147155632bdaed7edf5ef34b939eeb87ebc23bda00921724f4002d5ff29615dbcd157bfcd90e62f4d14c8627b9fe26d3f29b261204aeda56f9914cda14a4bda9f4564a0146f128462ae1670ee25d64d76bb39941110643fb182c03fdb4b9a942c9a5d0dd84d1f637aa3f68d24ef8acac7f3",
+      "https://job-logs.eascdn.net/production/0c0eb7cc-b0e9-4ab7-b5dc-73c04f1e6af2/1769259250054-d8d42bda-8315-4ad4-a480-9ec9de29b90e.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b54aace411329bd9f9341c65696b28ca7c6059a8cfecac1b11ad2896cf37ccd651a3831a67705cc3b74bf3a8bf58926b35cec2863ffc6c3d2746eeaba1e735f4494076980bfa0539f7729635c8ac5675e2e5bf13a520cadd482566cce917e389b5ff19e98048ccbdacf7d0029eee9c0c38dee850c53a69f4bc0b759a1d4049f4dce75d9471fd4d2ffcc1b99908af82bc5359168ea737596d8d3b8bec8b2a4f03a82b41e240f358b37da57e2b2ea44f15e7ce6850c78fab747a7ffe4783e457047efb6dc332180e9fda03dec9376045a7982e6d8d9a7f8503fd0c3b3461c2d8f0af0e72370f992fd787e0c006f8145e4849fad0584a751ddd4a87ed2b821971da"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "7",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T12:54:09.153Z",
+    "updatedAt": "2026-01-24T12:59:15.463Z",
+    "completedAt": "2026-01-24T12:59:13.086Z",
+    "expirationDate": "2026-02-23T12:54:09.195Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 133,
+      "buildQueueTime": 49472,
+      "buildDuration": 250076
+    }
+  },
+  {
+    "id": "eded72d1-5cf8-4cb0-bc74-897ae354922e",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/vo4mhWMZiHf8aAvCz2qRMG.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/eded72d1-5cf8-4cb0-bc74-897ae354922e?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=4126bd5c6e9314191ec5a5cec01bc65e73bca077ca4f25974105d7d961bf8b770faff1e2e6ac23fe0b5326d6bed2982fb3c9aa9af471ca9e560b4d6c8b47d0389bcdab225299eee4cd4270f151369eba9bc09faca0a9c5aa01b7668c0196dda4b7e3b4bf11534186a20ef23f1b725b920a9a9294e93fb8236fb870cf7568a723f9583e014106778c721a14a288f41d21b6132c4a05b84937e021343f54a7a88053dc243b9331ade512f8172c5c12ff35685af85fa0db4d5099613e9022bf7b776c85d12876c5f036af9c365e443dc0332e1ccab14cdd4791afd4d339e7ab9b58413b2a3669d8fb5026c899c011a84b36ae988b493b24396f1528f002750e3596",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/vo4mhWMZiHf8aAvCz2qRMG.ipa"
+    },
+    "fingerprint": {
+      "id": "019beff9-f7a3-749f-bf1d-48785614efb1",
+      "hash": "c6147868a8197a40c83ee4a0dd70c434c427f735"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/eded72d1-5cf8-4cb0-bc74-897ae354922e/1769258435768-05a7944d-2064-4007-b964-3b14d2ee1c51.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=173b6654488ed6033af4f850a33f1bf5f1fe8d10217bf54e4f50be3bd3389c5ba670130a6856fc05aae67f01dad46cff7f0a6204af685a764ef8e7b814ed1fcb748f1a01a6887970979da9172b444f4a62e13adee9785f1a1d58f6ef99ffbb5812994f0915a5557fafbb77c4b7c611c8e2c208219c7fafe10950dec4fb530e8efdcaac872045342ca0665747d4a0641d28bf3232dec7f7133bdfdc4caddf8139eb47608475d7d8effaaa2d082878638984e04f085b1acd53a2db4e93708de78981b63b44c88434fd6d51e78425c9b790af0d00df3a615fe6a5656e4d34f7bd633b694947439a786af828f3b02a3f13b55a82b46746f89443d2c783ff5269a24b",
+      "https://job-logs.eascdn.net/production/eded72d1-5cf8-4cb0-bc74-897ae354922e/1769258438459-efe66851-36b6-4162-941a-7088546ba341.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b54d0db37c1890410bd11bcaeb4bbea70e98362b7e85ff2734059d52b62c5a5d80f4254234d42fee7e58f6cb0baf0d98fd4054a8833769c571d5e510de01440da1e77ef7e9cc7693640c9b4ff22fec430b680e3b9246212a2a2d4a88fc2627aa9213b505041ff1108f511ed4c0efa9c5f3c5ea3bc1d4ee73b8ff5e512a4010c00cc3a665869b0360aaa8b86383d0fe975ae7968a636551d1210464316217c1eb115889bc7104476d1ff3d9aea30336f06da1c4e85b860a06f98113c6e05f98a2dc9974e469609bd6f4f2c341f02e8b7f93aad0ca87f2e5ef2fdda2db42c32b1e6c09808fc8d032c1b702f96232afdf95ba31120c124d1cc033ee2e0f83b6d614",
+      "https://job-logs.eascdn.net/production/eded72d1-5cf8-4cb0-bc74-897ae354922e/1769258438725-fd0d86d9-3c73-4d8e-90ae-9fdce4c1dfa0.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=30eeaee53d55803ef92a9741286ffb1f6fde7efcf1ec52e8095ea76d90aa9293b0dbb600b8da19885ae8cd2ec601456d515ff194f4f9c357865c1d10380eb6e1337460be32f0254ac360c2214e754ab01b87c9ddff4e3fe616d422e399df69bb4082cc83804b4fc5eae8cb50bcd9e917664a45391e9054a71c9400caaa3539a3aedbd0fa4f683307748b675f6e617eab27b9da9319ef9f2f8a336f3d713de93043dda9ac39a8b34c3d1d170c69047a0fb470f20dc644e2b95923ead3fb201e5978c66d0afb36e438af06f5a749f566f47adeeb7fd7db91f488cf3e369997736ae2567a2bccf98e5699d67d3f53d1393c460b7fe7e43aa64307514fc38de3cc5f",
+      "https://job-logs.eascdn.net/production/eded72d1-5cf8-4cb0-bc74-897ae354922e/1769258438905-ad1f634f-bfd9-4142-b775-4d1f06109741.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=7accaf9a7525d84c206be148134a878d88673473c7341c241f598df82b7fc4afae7634848dc45f1e4d68f2b34d0a55c2c8ec3293192c6e77f5b60f7d70e826c361ef5c314c11f086c6e530110e5c7d834df36fd9556bd03047f97c66a93e33a139f7ba58d6199e4f9ee1d2fe75b3e896ef277af8374056d62046efec8f2e2e4841b56ae0b78b3a73bb665634c2bf9d10bcd2ea951fd686bff30799e3059d872d9c33b4eacb0245dbeced9f64426c252a439e1692cb8a49b678b40206b24f3cb8afe558318ad13510b9deff1e477e375a3326b8a1fbd4d3247fb87fdde7c2ff0dd76bc8e62f3979efcc419c1b0159a3ffbfc7a3e3b05c36843eeef48f7050dcb2"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "6",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T12:40:35.464Z",
+    "updatedAt": "2026-01-24T12:46:09.879Z",
+    "completedAt": "2026-01-24T12:45:57.642Z",
+    "expirationDate": "2026-02-23T12:40:35.550Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 174,
+      "buildQueueTime": 45668,
+      "buildDuration": 272159
+    }
+  },
+  {
+    "id": "cc0870a8-9740-4467-b4c5-ee4bd15c0514",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/rcivG6iaipkMkdNC2hETkb.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/cc0870a8-9740-4467-b4c5-ee4bd15c0514?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=001148845cd283b3e68ffa0adab35553045ae4e82cf26f9a64d401de9ad1ac7dc8db52db325ce6186b867bfaee216a49eb92b5a688dcc121ecdbcedd71714d511e2db20c227c5acc4d741128ccfe3fe143837662b7af37a316e7c3da7cc49a22f6c607c59cbe27cbd54e4395f7923d92f496db2fa68ed9160594207c146a9e97c54c1e9244f171a5bece238beb78f49b8fa4b0bf080ac0768cd54d2bc2c6051825b7b7f2f7120a27fe14383e7c5f426f1d769856515b3eabbbaf21d6165eab8f4126f8faddea5a7b163b78ab437b3fbd6cb908932a107cfd276c3f23acd11b0e722aa54e508e1dc1aee426e817225e321cc36887d3458185084c42463426a565",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/rcivG6iaipkMkdNC2hETkb.ipa"
+    },
+    "fingerprint": {
+      "id": "019beff9-f7a3-749f-bf1d-48785614efb1",
+      "hash": "c6147868a8197a40c83ee4a0dd70c434c427f735"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/cc0870a8-9740-4467-b4c5-ee4bd15c0514/1769257695349-e815235c-ec73-4e1b-a669-b4df43c6afb8.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=a3f11b00eae50362e32dac3d3b134a2386411f91383806d5f0730692e9e9c5f10081eae84f68862b8ed9071bfad2b6506df1db385b07264d0c7c7f2b32a521f0ee9c7e03594c5e77e5def463fb095a35c3c2606e32403aee57577caadf38ed1dde7b5d7487cf95362a6d96e2478cdf43e7b0c113d047850ad732c3086b3564dd200efef2c69d4b1f8a4921ad638ecd71182ebce14a09c07dea9cde1fd399f612e4cbd9faf5d631b07438ed8331cdf434c8afd7bd53c22f0942b0cfffd1546dd84a213026a19a707aeefbad0466f870838f4c34b3af3a054e064621667d20ce6250ade23ea6576282a7ba41ade39768088b6a25ab428f74f1e5159103e5cdb1e5",
+      "https://job-logs.eascdn.net/production/cc0870a8-9740-4467-b4c5-ee4bd15c0514/1769257700580-dac03132-5294-453f-8a59-d2606d4481aa.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=72997bc96b87e44dd2a8735edcf6a72d9846c378d1f6455723e15f9368a4a44a6adf4074674ad8b1f7f984326b76a1e807f53f51f70b078896aa67a9e690729e52dbbfa2be9b06143bf628a4075e122db4fe3cc17c3727fa9edf52563799a136ebf23ef1bb7c1479eed434c2d1f3565adcc32cb3afafe3b68027d0a55fd37834b8624e6b9923a9920ec9918800fe8eb3f13e8de89d7786eabb3ed5e88d3c5202ae3b2d9749bcd905a0ade00a8bcaf906b34b0e54e6b843f73bf98ac07f44b1e8b22892e2f2d37cc4e7666fa39c86d8bb2d3f1ca819de88a28500c65e0bae593739eb26624bd56518a4cc591f7c6ad0831effb282eacdddbb8a8256933e95e790",
+      "https://job-logs.eascdn.net/production/cc0870a8-9740-4467-b4c5-ee4bd15c0514/1769257700835-490c5538-cdf7-4968-8373-946901b9b82f.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=ac326df9e38c507c4a1c9353910dd88931201fead90a14f5592405db0f092cbd838131f7d0450a69d79f2b8e2c3202f3fbfb914b8420954b5b57756dfb45d2e75480405e7ded2341807aa48e0ea3a943ff43fe9e86ba70c1c407fe45cc61886135be1fa306470cd0c7d4f9f24d0095570221ccad1e860475df58bddcf655f29895248560841bb58f715f7a9a0784cb29b6bb24415272f6530599556a01b941daf019ff2790b8b23bf12382372b12f356c95bd83cbd2b2ef467f2165e3e93b324fff15675dbc312675784911d6d4431f6c39d8a89e51c0b04bcc6588740f382a16c2978326064b53f417594083b256f32d3fc9e01ad3e5604649aed021c972b5a",
+      "https://job-logs.eascdn.net/production/cc0870a8-9740-4467-b4c5-ee4bd15c0514/1769257701044-24329e9d-c274-4f15-88b3-c23eb378e0a2.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=55c3209752fde715efb5598343c78089e3db9bc07bbe116baaabe9b78b80631bacefaf27502be84f01319b7dbeba550217bf2c97bb16ae8e6d907cc35c32d0c89d07db7ddd5789900b25073db31310da9ca064207f653ab44e2a12ce940038de7f32730b690cad5a9d39c41b3818bf8dc392000fc9efb7b677ea32f22c4f0aaeeb6539a554ed3d49bc1f536576a18ae25fd4c3c107107e76a2722715ae23feed94f8d1f80676e6813f0eda3229426da1744762159661f676ee1306b926a54c988322b8fa686cdd11b0b122e14a7e6362178e1a22705f413368880db00cfb2e79397655be2634f01eb74bebeb0ecbc108fd415ce90cad56a925984031278eb40f"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "6",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T12:28:15.087Z",
+    "updatedAt": "2026-01-24T12:33:41.675Z",
+    "completedAt": "2026-01-24T12:33:34.240Z",
+    "expirationDate": "2026-02-23T12:28:15.130Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 134,
+      "buildQueueTime": 52013,
+      "buildDuration": 262870
+    }
+  },
+  {
+    "id": "325f8039-a734-4074-8650-2191d8c3940e",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/7dM25tji1py234epFHSwAA.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/325f8039-a734-4074-8650-2191d8c3940e?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=bbe0d0c6ff0391251e33759c117b05fe27dc3f976c83588205808a56993b99b238da04640a6a781d38548570582002d0ce5a920ba08b199e44322f4b94f496d595a0f384a9595f64f816821db385c6f4a25b17f28e5d829818df1fae8637259a76cdeb6126ebb7074315ac1fe0ceb77046b6c6065bbd2d08ebb836d1b153a5bddc6f4e6161743627485f65b6a3cda941b01613a9062765a9604c192c34fa342b2d850375f9f65a3acd11eb34ae4edad0ef838e32031d098148f5e4f95380659e6fde68aad5b46665bab355ce40b103d2ec0a08b13fce38424a25d453122337878108b053b82df18a9b85f3f04051c563eecfadedaa6aeec83bccff6ec0a99a99",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/7dM25tji1py234epFHSwAA.ipa"
+    },
+    "fingerprint": {
+      "id": "019befe6-2306-79e8-9deb-b62fd48d2dc6",
+      "hash": "0e5483a3d009ea713fb60e2c78d80f2239580e53"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/325f8039-a734-4074-8650-2191d8c3940e/1769256395775-02ce6a72-f4da-4dd4-8ed7-2ca5c2e397d6.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=302f05d5bc51d4518f16889c2a4df76798d0f67acb83b2b6c1ee06dd79ff3d3576115f7ffbe4fe4d9d61cfc10bbae326468300252ce6310bf01e3eb529660008df04c64fcbe6fbf3cb4a1b29b2e7671407ba8f0bcb604c8c99a94cc135b8537f67a1ba5d63d347cd7c46a3791e6aeb4f719926bb940a58610d1477814fa420113c9fc3d3dae02e44736e8d492950ac16341e27f612887ea857d32471c5e908913e8899002840d3d8819274dd77034d8b681ceed61fbac2880a97b11eb2fff13cbff516e7187c35fa9b2ce9c03b15879a8fef19546e3e7c6a446826b3bf6eae3eb16d368d631821f290a93faa74beebda3e7c7253890f96cd48725ce84fe0134f",
+      "https://job-logs.eascdn.net/production/325f8039-a734-4074-8650-2191d8c3940e/1769256399641-b725fb46-fd7a-44a2-8542-e27d3445fa5f.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=0416a3448c2c5bc609e7c0d763931ed877d03a1ce1ff565ff61df8e76c8b58ea206a2f7743508d79dba5a494a964fe855fbcec64e7a4970180751d9a356ce571cd2abff4c62e64ece1b6e7bd8f12cffb06b296094ba7cfcf30e0b589eec8ae0d7fff9fef4a53e68d5955066a1cc41cbac17f3645183c9b41769d90f9f9f78c93703b4c1ae6474dfafb3e366ce7db81bfbb94838b82f88976dd9ec0a20fcf08b737e6ef7d605aedbe3c871f441b42a8a34321c95903be63311d0162f6b18ce658e15a81603a536780fb4a48776308429da477126320e12f3e65fb859ab1e1e8a9893b730ad50a0054c7c556ea0889ced3bab4657f5b1b4aa7506cc80aa5611f38",
+      "https://job-logs.eascdn.net/production/325f8039-a734-4074-8650-2191d8c3940e/1769256399942-d1a1778f-47d5-46f5-ae4a-61585b664b06.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=86b955aa5d2950fb5fa5986b7bf73e46c49cdc11acaf56fea8ab1b6661318d79678b8febb6391cdf0ccbdb5210ff98930db0225df3fd646009dfc891f15717d8c908f34eaa003970372d0fb3809f5deb999be1d9852cee023a42675d563543e3e0e05f5d177503db49601793029fd6fd30beb75615e8c8c320ff11ff5898f3c0e2cafbb30511dace1b6e7a7cb23d5b81de756cb9a7e9f157d604a653d035814f1d45265c168deb054fd37ba86c21cf1c3f13ac0cd0d6aa39e6ef64bd19afb18c4b3a9894a1f520082165cd977dbaf3fb0d57e097307bab15b4b430273c9b857a17e202374dcc1806dd6fc96da1653d81b08d746489bf1be24fc099df16413044",
+      "https://job-logs.eascdn.net/production/325f8039-a734-4074-8650-2191d8c3940e/1769256400155-ab0e33c0-c772-41c0-9fd7-7936deaecb2d.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=01a09585ed74c98bf0da17af9f4d9b6b4e224c09421cc7b2cf1e13b11a204bcf37af74eb69ef1a383e9d0f9b407fab5510fcf26cca08555a1b78a0a14d8f06d80fb408491dfc66aaf186901635613e29d81e82426d5169de337a84b7b256de92ba0c854b402f652b9dd85a3c9d15c9de2eb85333a53f553d983d819d042cbb80dd520bda39dae7a3b333ad7381ac850d88afc236d2ecf332924f07cd0a23504ff18bbf6c5ae22316206d8abaee3375de6fd7559a9179492e18c7a9594b4b54ccd39ba76e64437198d2c624676fad72fc46edd55b0afa8a81b6003981d348e96578f317cf53228560020e57ed03e215fce08198afc83a65ce12a98dcee2837c82"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "5",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T12:06:35.459Z",
+    "updatedAt": "2026-01-24T12:12:12.256Z",
+    "completedAt": "2026-01-24T12:12:04.512Z",
+    "expirationDate": "2026-02-23T12:06:35.515Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 160,
+      "buildQueueTime": 46926,
+      "buildDuration": 277770
+    }
+  },
+  {
+    "id": "3cbf6d24-2779-4b9e-9e4c-c6809f9e9077",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/8v5FDGm21QxiBgVq4EQ822.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/3cbf6d24-2779-4b9e-9e4c-c6809f9e9077?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=98df13d07bececc72e13306586e200fd514a7847da2293d4fb0c5161ebb44bd4f16e3d89ea1ccc0227abc45a97a306c822d4af2595b93ef09b16e778adaf2b413765655f065f2a6653f56035460245f46a7f9131ca059cc4e0defff085c5213e6bd228946ab46830c1ea3e2116acc4be85601de5b9e6d9d0468458b92cc0cb48e5abe8e6f679dea74e637a543822afe59ec100646318f7dd07570524d622982d9b0219d4e730c30dbd09f73aa04eb7361fa417001e07d68ab24e2256eabd4e2285e7d11d12851be604ce22918d1f47760d8a26c2edba2ce84944da60a93ecf1cad4ec1697dc4ed4b814d7bdbb79256d6f6b49f09f246dc6fd4dc94f550e277c2",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/8v5FDGm21QxiBgVq4EQ822.ipa"
+    },
+    "fingerprint": {
+      "id": "019befd4-431d-72c3-84ae-f2f6bbf4d609",
+      "hash": "b8c5f3c7954ad33492406cb82e6190d4eb1b56b7"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/3cbf6d24-2779-4b9e-9e4c-c6809f9e9077/1769255224288-9f6f2089-151c-4380-80ce-374624fffe6f.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=5fcef5343863ab70086e8c53444cc933c5c2463fe9ec15001937e0e93b72cbf17031ca66dd87f3fcc9c1f2e938e017b5ecc0b8a87bb7780e46fde04af07607d0c21adea7ea6aba89222be48fa96faf7865a31a377861350bcdc7937cf501bed4fbc844323fd9edca8ce2d1b04930c83af61d381aa1ecc3b23b874525970fc9ec46a1df81562e6b9e22b3dbef005f10d16f905efcdaa04183fa6e133fc6b5b8f60938dd8468484f9dc82738ae41c29f47aa1cf7d7235d9d4720a54889b94b00e59bc982456eb2828e682702f0cb75220ecfc9ffabfb3f980fde996c5537d18df9852217444cc62cb82ad33a2bc1b5beda59c9ec6b400d1b9d2c6605fefa9b3a94",
+      "https://job-logs.eascdn.net/production/3cbf6d24-2779-4b9e-9e4c-c6809f9e9077/1769255229467-a4d875dc-9e88-461e-8757-6c3efaa88761.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b21a1a5a504e4f733f799abef80ecdfe1ef5792abc6304bd447d5c5fb11e082b5ef902959651e83df3bdc61b89a5538b9da9e090ee384bd7104bf2cce57e15e8bcc93ff444d83ac2b43a1dd2ec4c39d0814ec93b55e9731ee81741b8091e4e784b66b49a45a95ceffe71cd397fbb4437777776a8997c2c9bf0aa4ac51e752002132ae6d69dabde6c610ab445e9c954427ff77dc146c0021172c93fbb7598678f13828a1be66ce44b441135c8c43fe5328fac13b8f7b1e9320c026511aa17e813709c535e7bf29ea2834c1405765a54296cb6de42aed45abd073bef2f4376d03eeeabb99dc25ac2cbbee4b98525f900e9b18c5d31814707d848fdd74f14086bab",
+      "https://job-logs.eascdn.net/production/3cbf6d24-2779-4b9e-9e4c-c6809f9e9077/1769255229723-62c4dc88-97cf-46c5-a673-0c7e8f4ea326.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=788afacb3c17be5ca6ad5963457fe358dfc27406515cd9bdfcc6e83f3da53d56d0d2a26c0ae1ff5472569bb6cba6ea5036837f088ee7ac9ba83c741aa2d9df7cfef5d4283b2a1f4190dff7f14f7f91cfd817fde35386559b7a9504026616fda66bdf34501813261d66b33c7ffce52fe7b29b9d75faaeb2b4416cc4ed30e120c73adec5cacb67626b9e5fec9a607deed9294375c6fe41d886d2b9d7429c7977e5dd782b42c8dbddccb5f040e052c17ac7aef741d94dc04e638648cc23fa3329dbd67a1a433d3488268a82048996f028b4c7eda22b24c897ca2f50ba799eb15c27b8e53d9e73a6c00af7892019396e9cf1df3beb412fda77fc286d039816161787",
+      "https://job-logs.eascdn.net/production/3cbf6d24-2779-4b9e-9e4c-c6809f9e9077/1769255229916-240f47cc-e5ea-4799-bbb5-42f5ef1b378e.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=0e787c45a4758a7a1253e964b576b0533f76f77e2e7c64ef96d27bd2e049881c80c48654c5cdaa372386992117a1fbbecdf73f2fc87351202ee924bb55756d9f5d61118acae94aa4ca012a159132f88ec09203943cf890c39d77dcf27df026d0ba86b827192958085ecf3aee06460f0cbe26ba9052645e3e9f697a27bf4e58c8fca854ce1c0d35b5855e289e90b5753c28397848bc59884531f1426c9a76bbc724a8f94828dc33a37b14ff38c9b1f47ea57d7705fa350275dff60b769c4540ff3a6d23053a645b9aa837f15429d764db4349f438d2e28a7a292a1cc6c30b8a376a5638060e08d6ede170e0b6ecef6aa14cc4e03c5c924b909368692a3e546031"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "4",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T11:47:04.034Z",
+    "updatedAt": "2026-01-24T11:52:15.429Z",
+    "completedAt": "2026-01-24T11:52:04.915Z",
+    "expirationDate": "2026-02-23T11:47:04.085Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 132,
+      "buildQueueTime": 51665,
+      "buildDuration": 244914
+    }
+  },
+  {
+    "id": "020dcdbf-3d49-470a-9d9d-7cb50e3baa84",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/fHcDC9oDZegNKyj7CkUPo.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/020dcdbf-3d49-470a-9d9d-7cb50e3baa84?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=594c7486e7e4e9a6498beb3af9acc8cb0a5319b9273b4944a23348971a5ffd1dd79be2d7fb1eb09fffa6463c10d1295b4a7db5971c4f0ca414e401c3756cba7e77e4db66403278cc427ba915bf6dbbc76fa9757be679d2aaf92f72055f972e0eb1d9465b7651b86f7891357e031a390dac54ec9806bc0acf3892898eac642a52e6b13255fbdf64a017f5683435a4ae5e3ae00e21eb6b681093f162e8f9569ba0fd7fae23b471cbd939c8ee2ba1683d36b341c5aae497ea3ef853a3b3c119a3d5e93a02774bce104ee88e0fa3f1611dec408fc88db1be755339f4b424630e203af3c7d7227c0a9274f7b66eae5a41f159d34c960e9377d17d8e5db894d9267033",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/fHcDC9oDZegNKyj7CkUPo.ipa"
+    },
+    "fingerprint": {
+      "id": "019befbb-fa8b-7483-a90e-53e7fe4588b4",
+      "hash": "83a14cdb577b49ddd3197257906b431323bea129"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/020dcdbf-3d49-470a-9d9d-7cb50e3baa84/1769253632912-b034772d-31db-4519-a675-6957031a86bf.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=24951bfd610bc6723aded9004fddb4ee1bc3794f8a7aef39272d9c961729d2db90353bebdeef15a1a3f5d4369f3b3aec077b0245bc0ee6404d940a006396ecb88977751857327d869b0423adb7288426d62a6dfaa6d60ac5a1c00d4416ce324878fba59e5de2680e3732bb676fb3a5cda76788861a40a66f9d6fa4d6ee23abb6fb5781240ec2562eb6758e70ed18d007f8b3e03f2ba5d8d9425044e8b0bbaba7718f59a68f15191a3ed8873fe31e856000f3948a91f3d58441a3829b5f8bf0c4a9ba825045ec501633c4aaa040506af255f6a379fda9a7c7535e0f181cfdf87348929bcf60dc073d63e833f9099bc4fa341438a1a74afbb231b122c6da45b0c0",
+      "https://job-logs.eascdn.net/production/020dcdbf-3d49-470a-9d9d-7cb50e3baa84/1769253638962-54b33dbb-c467-46c8-ad2a-2dda4c9217ef.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=901c921cd33ba4ca00d0003cbd871c3eecf228557559f8d3c3bf88ce65af810d14af99fea181d0f8828580bd860007791e68ec2a0ae8c8fe713d9e293ad75451543c7db475892ffa39e3512da0c4f248c7ec84555a0a48ca712899293d68811acce914f40d5eb5c8f5328c1d5f7ea98dc35397069a0bb63644386d83fa4a5aa513573e33bdb3e3fe24c0c34c224f58cbd5c60bc47a48016d3e73c9551e36d1c0fcb7e105a7698a253ffc2b203e8c58b448f4f1ffaffc7de722abb34271fcb77fad749e6fbf47b058c697fb805c3c50cf26c0caac9acb5dc657fda8cb1c4f0b67d6f19ef64371a02fd9db53889482e3013e83ba1b17e30b17a5d29d5c0f4ab257",
+      "https://job-logs.eascdn.net/production/020dcdbf-3d49-470a-9d9d-7cb50e3baa84/1769253639246-37f38354-146b-41d4-8f7e-db21164974a3.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=74602de21ad67bee861838daadde8c8cdf8949d931d90aa43f4dbeb66b2d7e6999394a50b9fe942e1b84dcd3684da777a9abc71e0040706ffb203b2bf3bbeddc69d3624a490f5e404438a81ff9f85bfd1b4dd022bcad87c9d08dd2a89626a5626d81fc12f37ae7d7b7cd03f877b079f1ade92c8eacc253b6c0211eb2d2b57241a17b389ba974721735e0d99362bd4959465925fe792b3ac3ad15576cdfb8b3e247fa50c3df086b2eb1f06275901a88acc22b40e0a1d34f97b62b399a80ffb01fb1e64512d659d2cdfa0c78ae6b9497193f573374ce72b83c6ecbe8d1f5ea9418df814f53969457b5adbc9590eea8e271e14dddaf14d46987b9a9bfb49bf8bec7",
+      "https://job-logs.eascdn.net/production/020dcdbf-3d49-470a-9d9d-7cb50e3baa84/1769253639471-f671857d-1aa9-4f62-b086-6233552890e3.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=261ae7cf62ef1eedb5979aa6366d6af67fbe884a12e0d5e1a5e739c38072a1092f374295ed67f529ed2829c17bb7ea221b8eab9beb1bc95ace165384c2d6f78954219c6da77d21c30f89428d2c0f0f68bc233f443fd94dc9c2acd96e3a69b1be7d6f252eea2f54481bc673880407a4eeb52e7cb67e296352403923ada45f5c46464d6bf827c437b498ff17add1dd87d46c9ebe9d7fcb376acac040e1b31ccdfe79afdaa9dbc04cc1db55c8957039ddf4e24c12710683737aa58f8c01e1f6b5ddcd9421a7ea13d1e25da31c914e77338898e6e02c0668019a22547d475d0df0f66df19e5c157a161310d1d672e56cf9fece367981abad14b292cd3ae1037d96f6"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "3",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL",
+    "createdAt": "2026-01-24T11:20:32.587Z",
+    "updatedAt": "2026-01-24T11:26:01.696Z",
+    "completedAt": "2026-01-24T11:25:52.094Z",
+    "expirationDate": "2026-02-23T11:20:32.643Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 158,
+      "buildQueueTime": 53509,
+      "buildDuration": 261684
+    }
+  },
+  {
+    "id": "1a6ec683-9aa8-4032-9016-4b19b0d1ca4f",
+    "status": "ERRORED",
+    "platform": "IOS",
+    "error": {
+      "errorCode": "UNKNOWN_ERROR",
+      "message": "Unknown error. See logs of the Install pods build phase for more information."
+    },
+    "artifacts": {
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/1a6ec683-9aa8-4032-9016-4b19b0d1ca4f?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=571db4b2e6bc51dab37fc6e2be2cf9493780d7a6ffb0ad1100a1641e5a5ddcd058ab7257b20b3065fd584d72c5afef0ca991a26e73de5fd0ae1b8745c655700029c60ef62028c17640a4fae0eaa7884c0e67fcb2cb7f0f409709fc80d0fe74f863377b07d005bc95f459b31270cb478432e5aa9950e4d48ee752e39c2781768ebbdb1282b4dbade4a57014740a65b323864fdb6b2cf1262e8d850dfa9eccfcdc0f06c6f60e612967f5cb90f1f441a8079d9eae0319d303e1215687a0cda1494764f3135b3200cfbedcbc99554e61a0e135b4418185dfa4d0c9f906add951488a953f28d5f4cda3a69d7a2f014d69bb582dcb95f73819d26928d02b22b3b0eb8d"
+    },
+    "fingerprint": {
+      "id": "019befa8-3dc4-71fb-8b9f-05e1ddb200d1",
+      "hash": "a6728c551253483892594d75a6331d5ca7975a91"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/1a6ec683-9aa8-4032-9016-4b19b0d1ca4f/1769252339412-b1ebccd6-7d88-47e9-a5d8-8d863125bba7.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=0d00db74aaf5d6b295ee686b35b096a593aa30c7b7783f24ca2d65f203538fd2906465d4f509b838a25d1b7932741b12262295ee38674f4be1a8552b85e40a4fd1cdae99c763041e46bc7ceb1efce7f44f4dececbf267ce464ff48a8bd560034db50739ebd8b5a62f1f371f621c0ed293581ebbea6c74b55c48898795868f74d7a95648d7733c12b4e30de555e27d109ed65c6f5ca98a057bd94f096d4d9869172cb22595a87eed115f10608077dde2b2781bb5332c1747fb473e829503c5c14f0c7c3769a75d5cbeb9ccf5f07cf646c232531c620221f119fac2c171c92ea85b2006a67b71c6139237d43458db4d9fd38fd7d37331ac10feec8bc40474b1efa",
+      "https://job-logs.eascdn.net/production/1a6ec683-9aa8-4032-9016-4b19b0d1ca4f/1769252343612-a33a3f8a-f748-4608-838d-4295c689278f.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=94a6c77b7c83d63d1f771198ad5dda2eb6c8b8aba333365aebfacdcd705f2a6046381b84dd74ef2df85c1359ba510330fa96ec5061d5eea1fb68ca2a77634a191484d605a98a4cc737f2dd9fb272592a170a1ed7d942134b833b7a67bc8a6d3a5c0aafe25969bcf0c217d2d3813b96659ca4e4596049512026b7d190b71f55c82214cf68589f8abc1a60f9f4e0e8689ef53293d52bfbd4d460ac4504466e227f4593330ae6eebf4d8388bc369908753874034c066b1a92a3714bb9042dd740b4b57b62a717c5065b3ce3df701b08c5f3e95d0d131429751870107934187f71c9aabf093bc8aeb0617416d74a32dfdb167148ef6be28360e38457f3e9006a817d",
+      "https://job-logs.eascdn.net/production/1a6ec683-9aa8-4032-9016-4b19b0d1ca4f/1769252343892-9990c1e0-0976-42d9-bdae-1fc62855b7b7.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=bf27cf3af2d233f353426e4c02806b6eb12ae1803b1a87a91885592f5a74ef44eecbce7f33d040221d35134b65105142a94f3f30ba1f005235a39691c7c01af8e2a393c05112ca21fa5a9acdd837a128e04335f5186cb82fa4f5888ac574219113c329a3c44c97219ab13fc9bc2c1f0d92c6c718e4c64c8f2c6eccce63841926d2d41512401cfc5b1ee454bf37c9178918731ae8e13a97ee5fd215269fec36ced2564d6d1c802ac590ee245905a09c0a4016449a6280bcc2e4fb5cdb16d88ddd0d61a0164a8b10e095adc91a3f7569a23e26d852e8f09c3bc2deaa78e819af62e56188521b4d7b47f84a2c31d55ed1116b099602442b5a3a72be102ff149b938",
+      "https://job-logs.eascdn.net/production/1a6ec683-9aa8-4032-9016-4b19b0d1ca4f/1769252344110-14cdd81d-3d7b-469b-bda5-f6a30dbb9938.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b090c955de6ac9766470033993bb92c83858a9b037befbc87fcf896575fbcd8fd36150fb83360f78354fe6acb811f5d89b1c33d7b2cb7bedb383853644bd45c17b9adc2f818c35877e427efc92d9c1ddba8498fee29d83408f9c79244ade9531180ed164b89b9e80f4a500dd33920aefe76a31ddd92c6a014a1658d838a95cc48b9fe9cd6379de979696f4bc84d4861967335934eae9e101e3e5e43ad19485b4c58e29809a6ad3882150f0fddf671df3e2809f89e1367670f5ac75a5b9f0c607ea063fc2dc62d39c60fd13ea3f23335679a1581e403704c2ad64c7f53d3369f48ae653daba1592b2d0b98a940dccf3af05892fbaa85534b79cfdc7cd416828bc"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "2",
+    "gitCommitHash": "80d9058d5c4763eacc6e0e1f6e9cd76d39d5f663",
+    "gitCommitMessage": "review by apple",
+    "priority": "NORMAL_PLUS",
+    "createdAt": "2026-01-24T10:58:59.082Z",
+    "updatedAt": "2026-01-24T11:00:17.416Z",
+    "completedAt": "2026-01-24T11:00:12.748Z",
+    "expirationDate": "2026-02-23T10:58:59.131Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 172,
+      "buildQueueTime": 46535,
+      "buildDuration": 22821
+    }
+  },
+  {
+    "id": "bfd2d270-848e-44d2-9357-431312f7e44b",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/pFRGk1hbRtigVfUwNdiqRH.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/bfd2d270-848e-44d2-9357-431312f7e44b?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=24ec8e769808e985c4c0a94f55feae6371e2fded95bf29dc1700f5020cb61e3eb74be5f4a530dfe5a8a6cca16c9f6b46f223e676e7be9450b780984f3dada0eeef40d177e77e3a10e976bd98968c4b26df2321640697248b9214cfbd2d6e08bccc99575da9b02ee3ec72ee9e28352ebdaaea2026c000090210436ad7ad17d9065916677c7ff0a0f2b5d9d45e14dba27d695ab0bf546e0cadeaba71d1618c2b642f97e53334badbe2b0afbfaab2db6ac82ad478106bb874f9e223c4f1629c7683535c74fb4e480be7530e868e1fc545dbf1bf45a0cd1627ea97ae2bcea58152ac1ea8cf2b54b9e09a73e5344959511ddaa1b8946933102699f9ddf4459d7badd3",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/pFRGk1hbRtigVfUwNdiqRH.ipa"
+    },
+    "fingerprint": {
+      "id": "019bbc71-f6df-7fe8-b6c3-dc3851a74d2e",
+      "hash": "8f10a9af1aef9c50926ba8f61a0ab064826a950b"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/bfd2d270-848e-44d2-9357-431312f7e44b/1768393689911-6c4e7c95-5014-4ec4-87d6-f61659c932f8.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=3164fdfcaab6d4134ca49c9c4903bec74f4a0fde480b4178779cf7f3c38bdfb0d59785ed726c2c1ee58ef412ffa1eeca6e12fa4e76bd7e47e0ac6b9d54ed75b672e1113593d9ff4b81a8780937c53a34c63ae744726a3e1b6cba825fe3ae08d3d8ebf2ceefecd74e0d734103cadf3f676e54a12b4b79fd0320583ff1a9c1001536dd431e493fa560c0e675e7a89dd945e8fc16c26601a65b5d2f55fd862f70caeba753f401c7096385eeb1e0ff0e0e0c57ac7169f08d029df81e5bb77fb659e3e012d87d856a98d03edd295e4e64bea671647ca9fd3db5725d032fe375a0531a13d54061382977e5618c63f6e5e435bec452ce688a3d6c89eb7f3a312e17b5cd",
+      "https://job-logs.eascdn.net/production/bfd2d270-848e-44d2-9357-431312f7e44b/1768393727675-ec99b654-c151-4cc9-a700-6e4bab9729f5.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=75ef55ca6f3699c0ec188c9fe3db00bb7e7e65b31b3c6dec4f8b94a62445cf14773902f169ac67918d108e82e85b8e3b650d1c913f822dba916e3536c99ac3700ed8ee6e74e831aa7108b14ead07aef4616fff32eb63e462b013f44e453cda17f5982bc23005b19426b2d6c7b1db33c4072b323d9329756dd95f04bb7b781e6c5706792c83dcf7d9a58485423643f35b61509e7dbde3bf167633a04a22a19a802fdf8f19fa501fb9fca9a3f76cdf54013598e121966a82a7c98ba2b8969f1bbb7a2892b2e356d966719d8b03a2b43aa51f5573cdba2f74d31982bf93447e260dd68072e3793118cd9cd5bc794f09a2d915c1682291820e76e514ff996e879b6a",
+      "https://job-logs.eascdn.net/production/bfd2d270-848e-44d2-9357-431312f7e44b/1768393727955-eaac5060-a1a5-42a5-b12a-5ac5b15a17de.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=5bfcb7a761885817efa2e8106842425b6a772e99cac4fd5bff2a22c6537c3778cddea7c344c31fe4adbb2d368765c5650696d22c1a100a683ceb43d3ec6d5f1c17dda009841952e53330c3c98f1c672dd59cffa5a34b72b4407c3dbe08fc4fde8d0111f5ae4cd8ca85f96d83a9a735b1b68b5c627160259ab52dfe2614e80d2dec03b061968e060c4c8eac34a2742c0f0a781bb937fe13fd868311613576ade624e5e2f9794cfd99e3cef4209a97346be47ab9b336cb07641c6f63f25c3120d688c7ea6cb46d3a792dff34c53c1be1010374a7a8ec466627ab5235c92a97346a854e079a27a8bf6d56cd834dec4cb7275765cd29dfe22c8f4a987994714f2425",
+      "https://job-logs.eascdn.net/production/bfd2d270-848e-44d2-9357-431312f7e44b/1768393728158-e8bea7d4-14f6-4e34-ac8b-cec2f90806a1.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=b2eab60b61b40b18d1a8932c9d7781aa5d406eaf82d98746091ec6d62046f9e420bb4de550a99e89e1a3728cbff56fa56d6c99699dae6996e61491f02853ecdb89b721b881b0b690b68c513ba9233fc446e0a3cea7d2cf29d6dd7502411bb56bfff3207467d1cc7921ddfec1cdb9d0291f23facda1abf566f9f449b6665cd0755e954b2e4e15051a3a6a1dac531fb601f048fb7aa6449aa06334751429214252d5f018d2de38c2fe0c152aa3fdc9b3014cb24765ce3d609505926e8b081303a824ea3b70452ef311522ca99cfdc44a0e8b28f2ad49542ed387c6ad07a3c153ad835f38e53418eaecc7ef60608425737b0c25ab0315b77e03ad97854ff762c49b"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "1",
+    "gitCommitHash": "a000b5306eb3887ca2796ca8ceee606ebad29680",
+    "gitCommitMessage": "updates",
+    "priority": "NORMAL_PLUS",
+    "createdAt": "2026-01-14T12:28:09.621Z",
+    "updatedAt": "2026-01-14T12:34:10.561Z",
+    "completedAt": "2026-01-14T12:34:05.740Z",
+    "expirationDate": "2026-02-13T12:28:09.687Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 176,
+      "buildQueueTime": 87563,
+      "buildDuration": 264226
+    }
+  },
+  {
+    "id": "21fd7440-f878-4dc7-8eef-e67f5dacacb9",
+    "status": "FINISHED",
+    "platform": "IOS",
+    "artifacts": {
+      "buildUrl": "https://expo.dev/artifacts/eas/5crvhLVZTXbBa8GGCFezja.ipa",
+      "xcodeBuildLogsUrl": "https://job-logs.eascdn.net/production-xcode-logs/21fd7440-f878-4dc7-8eef-e67f5dacacb9?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=854a481ba723544e1932aaf1e464023ebf91e01d4ad1eeb325b57db3d7ecbb8f955c6cd56b6e44d1a42e743cd0ed68f7d1dc615ea7976d8e3c1b38fb24c6f1a09894b158739d6e13f6cd201ea47914c1f5fe00f0f87058bd0939de7dee3a5f543247aa3c403fd1ecc72cb9f58d7fa51b416b0193c68aa600675c28db98bff02f850b85a690bafbeec4cfc4091c4eb8ea54aafb5133cc8dff1c969f8316b6b6d8845705a169893789126ebf33ee8c5e4a7ac4624bf29b33f22902b7909dcea927c56d40d4b7dcde4cdcc2da357baa3ed7dfe7b2ae673b7f3b0f4cd5632de714a09aedd1eb841bdd2639fc1adba2760efd71a4e5759da55f18018e9a49d9bc174e",
+      "applicationArchiveUrl": "https://expo.dev/artifacts/eas/5crvhLVZTXbBa8GGCFezja.ipa"
+    },
+    "fingerprint": {
+      "id": "019bbc71-f6df-7fe8-b6c3-dc3851a74d2e",
+      "hash": "8f10a9af1aef9c50926ba8f61a0ab064826a950b"
+    },
+    "initiatingActor": {
+      "id": "20d45d48-a5f0-455a-931b-ca7c62914d50",
+      "displayName": "guyshlomo"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/21fd7440-f878-4dc7-8eef-e67f5dacacb9/1768393144271-ff043412-e69f-46f4-a8c9-72ebd463d918.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=581586bb577bb4084992d36d75a8a4ac7632b3ee3da65e7bb25653fa979d75bc506e604a5c087108ed0137b5280293491a5b5192cae86253264e426ad664d712b1f83951c802727908af4e8d9dc134f2d62388772891f82fa7b34377c4b7248fc83177e3bec700477d3795595a2ff99a786466900f2a1652964b339e9d0c1d6cf7813d3868fa2b8468f85d2bc8e7bfe297cce42aed30745db83af1672b58ea23178e904bd9e6382e0a1b6780bf948db9835a489112eb432d017f39394d5df87305b5417d537e64504b5f8643c09a9f57278a76e1df694e0e61c4e3886fdca4e20d4d73d30943e023d1aad8baee3dfb471e514129a534df5209eeefe76c45aa60",
+      "https://job-logs.eascdn.net/production/21fd7440-f878-4dc7-8eef-e67f5dacacb9/1768393151884-e9e9b6d6-f22d-4031-8d8c-ddfdc83a5bd9.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=0c1d62fb20c47a5592cbde84c1ccfd6285ceece21db09570e8f2557547a69a08f5daf742029ee403e847602a9c3a81a4a8097ade7a0577a60babad2b3933a04784c5a49af5ce7b8bd6b708bbc97efdf4cefb60e1cd4640ace5788c4b0310d5e59d7ab29464c4127a85bb43695d507da663ce1c3b9dea85a9b64872a3952a7066e8c8d752d93acf4aa5301e318f880a0668081bbe8eacdbb5542b8b66a6d2e93c1d1a78082437ed6bfcad6d688662ff1fbabfea707700f256764889f0103e5fc0c935882168b6143a83980f54a610d51ec7f8624936f575e71a10541cc321ca3f956bc40b6d12d4886aa1bbeb16340fdec9804e395e4d96a4188564f2c23d8ebd",
+      "https://job-logs.eascdn.net/production/21fd7440-f878-4dc7-8eef-e67f5dacacb9/1768393152145-83fac934-467d-4dae-b998-33a86df64748.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=08cbd8403f2e6583f4fb2825e5d374742ba8c55e28300d5cbc96f872f3b208686a2ef0636f891ae7d327c57f6c5e6b5a3d5823f578e4646769dec66ea937fe9a3006708edc58e605a46c30b580545968f30a44ea547f378894d0c01ff8335c867638b21caf805fbb546adae174e27d7ca4fb73580c5ad0a60cf0d04efd78ba2678aca565d010fc4e0423b2d6a425066e2d030aa85f837dca4842d59bdfeead6a02cd18d1180d4bcee28714fede79df8699f72d061589e67bfa33bc31598c956fc62e7028898cc8bc8e58d55e1350ffa502c8e44e59e76b9420f8f5815b484946145c97898179eee90e4caafd148a0784054b9adfd827f850900a079747cfd955",
+      "https://job-logs.eascdn.net/production/21fd7440-f878-4dc7-8eef-e67f5dacacb9/1768393152334-3ae5f10a-a526-4e63-b7a9-debcfef6c8ca.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260124T133851Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=be9fe5130134e3b31e6e242efac276c79a6796e888d7cd0f38e203bc3a0cf228d914c9d1e109a723630b4303aff65faaa59e40f73c6283795905c99d42e1bac97250fce8c1f5a980c3ee72a3807bd6c71db88ea171cc1e059b0168e011f54edd8b460f442639bf5fb52852490c6cc0891bdada5926c0f6e00be57c75d7b0f107e9ff9336e759a2aa6856ad170a169bcb71479d98fbcd0c60a7433eadab2996fdee849648028e154bdff4ecd3f66536aaf4c4a929ad49adc4f7382226300a70f029a963ac1d700f9aa59f4632dce78fce2e99b1ec31c5a51082dcacf6c67184d27fdd7e07db215aa9aa78c43e5e0e7cb23e8abedd40a4266fffc8071e43f37540"
+    ],
+    "project": {
+      "id": "b65858d8-1fe7-4e1d-8be1-2de3c77652fd",
+      "name": "Todo-App",
+      "slug": "Todo-App",
+      "ownerAccount": {
+        "id": "842a3be7-d126-421a-81ea-8b9ac2654d1e",
+        "name": "guyshlomo"
+      }
+    },
+    "distribution": "STORE",
+    "buildProfile": "production",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "1",
+    "gitCommitHash": "a000b5306eb3887ca2796ca8ceee606ebad29680",
+    "gitCommitMessage": "updates",
+    "priority": "NORMAL_PLUS",
+    "createdAt": "2026-01-14T12:19:03.700Z",
+    "updatedAt": "2026-01-14T12:24:10.938Z",
+    "completedAt": "2026-01-14T12:24:04.982Z",
+    "expirationDate": "2026-02-13T12:19:03.791Z",
+    "isForIosSimulator": false,
+    "metrics": {
+      "buildWaitTime": 471,
+      "buildQueueTime": 51752,
+      "buildDuration": 244932
+    }
+  }
+]

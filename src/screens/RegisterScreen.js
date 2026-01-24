@@ -13,6 +13,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { pickAvatarImage, savePendingAvatar, uploadAvatarToSupabase } from '../lib/avatar';
 import DateTimePicker from '@react-native-community/datetimepicker';
