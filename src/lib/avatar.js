@@ -1,9 +1,6 @@
-import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
-// Expo SDK 54: use legacy FileSystem API for readAsStringAsync
-import * as FileSystem from 'expo-file-system/legacy';
-import * as Linking from 'expo-linking';
+// Lazy load native modules to avoid crashes on iOS 26 with New Architecture
 
 function base64ToUint8Array(base64) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -27,19 +24,23 @@ function base64ToUint8Array(base64) {
 }
 
 export async function pickAvatarImage() {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  // Lazy load to avoid early native module initialization on iOS 26
+  const ImagePicker = await import('expo-image-picker');
+  const Linking = await import('expo-linking');
+  
+  const { status } = await ImagePicker.default.requestMediaLibraryPermissionsAsync();
   // iOS can return 'limited' when the user grants access to selected photos.
   if (status !== 'granted' && status !== 'limited') {
     try {
       // Best-effort: open app settings so the user can enable Photos permission
-      await Linking.openSettings();
+      await Linking.default.openSettings();
     } catch (_e) {
       // ignore
     }
     throw new Error('אין הרשאה לגלריה. אפשר לאשר בהגדרות ואז לנסות שוב.');
   }
 
-  const res = await ImagePicker.launchImageLibraryAsync({
+  const res = await ImagePicker.default.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     aspect: [1, 1],
@@ -73,8 +74,11 @@ export async function uploadAvatarToSupabase({ userId, uri }) {
   // NOTE: requires a Storage bucket named 'avatars' + policies for authenticated uploads.
   const path = `${userId}/avatar.jpg`;
 
+  // Lazy load FileSystem to avoid early native module initialization on iOS 26
+  const FileSystem = await import('expo-file-system/legacy');
+  
   // Read bytes reliably (fetch(uri) can produce 0-byte uploads on some devices)
-  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+  const base64 = await FileSystem.default.readAsStringAsync(uri, { encoding: 'base64' });
   const bytes = base64ToUint8Array(base64);
   if (!bytes || bytes.length === 0) throw new Error('avatar-image-is-empty');
 

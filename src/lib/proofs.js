@@ -1,6 +1,5 @@
 import { supabase } from './supabase';
-// Expo SDK 54: legacy API lives under this path (readAsStringAsync moved/deprecated in new API).
-import * as FileSystem from 'expo-file-system/legacy';
+// Lazy load FileSystem to avoid early native module initialization on iOS 26
 
 function base64ToUint8Array(base64) {
   // Minimal base64 decoder (no Buffer dependency)
@@ -40,8 +39,11 @@ export async function uploadProofImage({ userId, challengeId, uri }) {
   const path = `${challengeId}/${userId}/${fileName}`;
 
   try {
+    // Lazy load FileSystem to avoid early native module initialization on iOS 26
+    const FileSystem = await import('expo-file-system/legacy');
+    
     // Use FileSystem to reliably read local bytes (prevents 0-byte uploads seen with fetch(uri) on some devices).
-    const base64 = await FileSystem.readAsStringAsync(uri, {
+    const base64 = await FileSystem.default.readAsStringAsync(uri, {
       // Some Expo/RN environments don't expose EncodingType enum consistently.
       // Passing the raw string keeps this compatible.
       encoding: 'base64',

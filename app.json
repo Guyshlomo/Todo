@@ -7,7 +7,7 @@
     "icon": "./assets/images/Logo.png",
     "jsEngine": "jsc",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/Logo.png",
       "resizeMode": "contain",
@@ -17,7 +17,7 @@
       "bundleIdentifier": "com.guy.todo",
       "supportsTablet": false,
       "requireFullScreen": true,
-      "buildNumber": "12",
+      "buildNumber": "14",
       "infoPlist": {
         "UIDeviceFamily": [
           1

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as Linking from 'expo-linking';
 import { supabase } from '../lib/supabase';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -16,25 +15,78 @@ export default function AppNavigator() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    let mounted = true;
+    let authSubscription = null;
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    // Check if supabase is available
+    if (!supabase || !supabase.auth) {
+      console.error('Supabase not available');
+      if (mounted) {
+        setSession(null);
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Safely get initial session
+    const initSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (!mounted) return;
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          // Continue with null session on error
+          setSession(null);
+        } else {
+          setSession(session);
+        }
+      } catch (error) {
+        console.error('Exception getting session:', error);
+        if (mounted) {
+          setSession(null);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initSession();
+
+    // Subscribe to auth state changes
+    try {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (mounted) {
+          setSession(session);
+        }
+      });
+      authSubscription = subscription;
+    } catch (error) {
+      console.error('Error setting up auth state listener:', error);
+    }
+
+    return () => {
+      mounted = false;
+      if (authSubscription) {
+        try {
+          authSubscription.unsubscribe?.();
+        } catch (error) {
+          console.error('Error unsubscribing from auth state:', error);
+        }
+      }
+    };
   }, []);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#6366F1" animating={true} />
-      </View>
-    );
-  }
-
-  const linking = {
+  // Lazy load expo-linking to avoid early native module initialization on iOS 26.x
+  const linking = useMemo(() => {
+    // Only initialize linking after app has loaded to avoid crashes
+    if (loading) return undefined;
+    try {
+      // Dynamic import to defer native module loading
+      const Linking = require('expo-linking');
+      return {
     prefixes: [Linking.createURL('/')],
     config: {
       screens: {
@@ -47,6 +99,18 @@ export default function AppNavigator() {
       },
     },
   };
+    } catch (_e) {
+      return undefined;
+    }
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#6366F1" animating={true} />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer linking={linking}>
